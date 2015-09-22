@@ -1,5 +1,8 @@
 import Twitter #Requires the Tweepy API, in the process of being changed to Python Tools API instead due to streaming support
-import ctypes
+import Tkinter
+import tkMessageBox
+import pickle
+import sys
 def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxA(0, text, title, style)
 class TwitterBot(object):
@@ -9,11 +12,13 @@ class TwitterBot(object):
         f = file(saveFile, "rb")
         try:
             self.quotes = pickle.load(f)
-            print "Loaded "+str(len(self.quotes)) " quotes!"
+            print "Loaded quotes from "+str(len(self.quotes)) " different people!"
         except pickle.pickleError:
             answer = dialogprompt("BrightBot Error", "Brightbox could not load quotes!\n Would you like to create a new quotes file?", 1)
-            if answer == True:
+            if 'yes':
                 pass
+            else
+                sys.exit()
         print "loadQuotes module finished."
     #End of loadQuotes
     def saveQuotes(self, saveFile):
