@@ -9,7 +9,7 @@ class TwitterBot(object):
             print "Loaded "+str(len(self.quotes)) " quotes!"
         except pickle.pickleError:
             print "Could not load quotes! This is an error."
-        print "Loading quotes finished."
+        print "loadQuotes module finished."
         self.quotesFile.close()
     def __init__(self, consumer_key  consumer_secret, saveFile):
         print "BrightBot V:0.1"
