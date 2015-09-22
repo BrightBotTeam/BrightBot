@@ -1,17 +1,27 @@
-import Tweepy
+import Twitter #Requires the Tweepy API, in the process of being changed to Python Tools ATM
+import ctypes
+def dialogprompt(title, text, style):
+    ctypes.windll.user32.MessageBoxA(0, text, title, style)
 class TwitterBot(object):
+    self.quotes =  {}
     def loadQuotes(self, saveFile):
-        self.quotesFile = open(saveFile, "wb")
         self.quotesNumber = 0;
         f = file(saveFile, "rb")
         try:
             self.quotes = pickle.load(f)
             print "Loaded "+str(len(self.quotes)) " quotes!"
         except pickle.pickleError:
-            print "Could not load quotes! This is an error."
+            answer = dialogprompt("BrightBot Error", "Brightbox could not load quotes!\n Would you like to create a new quotes file?", 1)
+            if answer == True:
+                pass
         print "loadQuotes module finished."
-        self.quotesFile.close()
-    def __init__(self, consumer_key  consumer_secret, saveFile):
+    #End of loadQuotes
+    def saveQuotes(self, saveFile):
+        
+    def
+        
+    #End of saveQuotes
+    def __init__(self, consumer_key  consumer_secret, saveFile): #Rewrite using PyTools
         print "BrightBot V:0.1"
         print "Created by Matthew Weidenhamer"
         print "Last updated 9/21/2015"
@@ -21,3 +31,4 @@ class TwitterBot(object):
         except tweepy.TweepError:
             print "Could not obtain Authorization! This is an error."
         loadQuotes(saveFile)
+    #End of __init__
