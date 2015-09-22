@@ -1,6 +1,5 @@
 import Twitter #Requires the Tweepy API, in the process of being changed to Python Tools API instead due to streaming support
-import Tkinter
-import tkMessageBox
+import ctypes
 import pickle
 import sys
 def dialogprompt(title, text, style):
