@@ -1,39 +1,35 @@
-import Twitter #Requires the Tweepy API, in the process of being changed to Python Tools API instead due to streaming support
 import ctypes
 import pickle
 import sys
 def dialogprompt(title, text, style):
-    ctypes.windll.user32.MessageBoxA(0, text, title, style)
+    ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
-    self.quotes =  {}
+    quotes =  {}
     def loadQuotes(self, saveFile):
+        print("Attempting to load quotes...")
         self.quotesNumber = 0;
-        f = file(saveFile, "rb")
         try:
+            f = open(saveFile, "rb")
             self.quotes = pickle.load(f)
-            print "Loaded quotes from "+str(len(self.quotes)) " different people!"
-        except pickle.pickleError:
-            answer = dialogprompt("BrightBot Error", "Brightbox could not load quotes!\n Would you like to create a new quotes file?", 1)
+            print("Loaded quotes from " + str(len(self.quotes)) + " different people!")
+        except FileNotFoundError:
+            answer = dialogprompt("BrightBot Error", "Brightbox could not load a quotes file!\nWould you like to create a new quotes file?", 1)
             if 'yes':
-                pass
-            else
+                f = open(saveFile, "wb")
+                print("New save file created.")
+            else:
+                f.close()
                 sys.exit()
-        print "loadQuotes module finished."
+        print("loadQuotes module finished.")
     #End of loadQuotes
-    def saveQuotes(self, saveFile):
-        
-    def
-        
+    def saveQuotes(self):
+        pass
     #End of saveQuotes
     
-    def __init__(self, consumer_key  consumer_secret, saveFile): #Rewrite using PyTools
-        print "BrightBot V:0.1"
-        print "Created by Matthew Weidenhamer"
-        print "Last updated 9/21/2015"
-        self.auth = tweepy.0AuthHander(consumer_key, consumer_secret)
-        try:
-            redirect_url = auth.get_authorization_url
-        except tweepy.TweepError:
-            print "Could not obtain Authorization! This is an error."
-        loadQuotes(saveFile)
+    def __init__(self): 
+        print("BrightBot V:0.1")
+        print("Created by Matthew Weidenhamer")
+        print("Last updated 9/21/2015")
     #End of __init__
+BrightBot = TwitterBot()
+BrightBot.loadQuotes("quotes.txt")
