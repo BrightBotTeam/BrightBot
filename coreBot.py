@@ -1,4 +1,4 @@
-import Twitter #Requires the Tweepy API, in the process of being changed to Python Tools ATM
+import Twitter #Requires the Tweepy API, in the process of being changed to Python Tools API instead due to streaming support
 import ctypes
 def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxA(0, text, title, style)
@@ -21,6 +21,7 @@ class TwitterBot(object):
     def
         
     #End of saveQuotes
+    
     def __init__(self, consumer_key  consumer_secret, saveFile): #Rewrite using PyTools
         print "BrightBot V:0.1"
         print "Created by Matthew Weidenhamer"
