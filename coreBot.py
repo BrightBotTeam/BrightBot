@@ -1,13 +1,15 @@
 import Tweepy
 class TwitterBot(object):
     def loadQuotes(self, saveFile):
-        self.quotesFile = open(saveFile, "r+")
+        self.quotesFile = open(saveFile, "wb")
         self.quotesNumber = 0;
-        self.quotes = {}
-        while self.quotesFile != "end":
-            self.quotes[self.quotesFile] = self.quotesFile.readline()
-                
-        print("Loaded " + quotesNumber + " quotes!")
+        f = file(saveFile, "rb")
+        try:
+            self.quotes = pickle.load(f)
+            print "Loaded "+str(len(self.quotes)) " quotes!"
+        except pickle.pickleError:
+            print "Could not load quotes! This is an error."
+        print "Loading quotes finished."
         self.quotesFile.close()
     def __init__(self, consumer_key  consumer_secret, saveFile):
         print "BrightBot V:0.1"
