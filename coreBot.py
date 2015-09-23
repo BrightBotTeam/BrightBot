@@ -1,13 +1,14 @@
 import ctypes
 import pickle
 import sys
+import datetime
 def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
     quotes =  {}
     def loadQuotes(self, saveFile):
         print("Attempting to load quotes from " + saveFile)
-        self.quotesNumber = 0;
+        self.quotesNumber = 0
         try:
             f = open(saveFile, "rb")
             self.quotes = pickle.load(f)
@@ -38,12 +39,18 @@ class TwitterBot(object):
             print(currentQuote)
             return currentQuote
         except KeyError:
-            print("Could not find key " + person + "! Returning False...")
+            print("Could not find person " + person + "! Returning False...")
             return False
         except IndexError:
             print("Could not find quote number " + number + " for " + person + "! Returning False...")
             return False
     #End of getQuote
+    def lenny(self):
+        todaysDate = date.today()
+        lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)" 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)", 5 : 6 : 7 : 8 : 9 : 10 : 11 : 12 : 13 : 14 : 15 : 16 : 17 : 18 : 19 : 20 : 21 : 2 2: 23 : 24 : 25 : 26 : 27 : 28 : 29 : 30 : 31 : }
+        try:
+            print lennyRepo[todaysDate.day]
+            return lennyRepo[todaysDate.day]
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
