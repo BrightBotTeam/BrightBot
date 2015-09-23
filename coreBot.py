@@ -2,6 +2,7 @@ import ctypes
 import pickle
 import sys
 import datetime
+import random
 def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
@@ -51,6 +52,21 @@ class TwitterBot(object):
         try:
             print lennyRepo[todaysDate.day]
             return lennyRepo[todaysDate.day]
+    def outcome(self, dice, sides, eventString):
+        pseudorandom = 0
+        total = 0
+        maximumNumber = sides * dice
+        while pseudorandom < sides:
+            total = total + random.randint(0, sides)
+            pseudorandom = pseudorandom + 1
+        if eventString == "-r":
+            return total
+        elif eventString == "-p":
+            print(total)
+            return True
+        else:
+            print(eventString + ":" + str(total) +  " out of " + str(maximumNumber) + ".")
+            return eventString + ":" + str(total) +  " out of " + str(maximumNumber) + "."
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
