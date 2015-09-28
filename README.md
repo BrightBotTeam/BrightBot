@@ -24,13 +24,12 @@ Replacing "Event String" with the -r flag will instead **return** only total.
 Replacing "Event String" with the -p flag will instead **print** only total.
 
 # Poll module
-HardPoll Usage: !hardpoll (Question), (answer 1), (answer 2), (etc),
-SoftPoll Usage: !softpoll (Question)
-HardPollAnswer Usage: !hardanswer (Poll ID), (No. of answer)
-SoftPollAnswer Usage: !softanswer (Poll ID), (Answer)
-Stop Hard Poll: !stophardpoll (!r or !s)
-Stop Soft Poll: !stopsoftpoll (!r  or !s)
+Create usage: !poll (hard/soft), (Question)[If hard then, (answer 1), (answer 2), (etc)]
+Reply usage: !answer (poll id) (Answer string if soft poll, answer number if hard poll)
+Stop usage: !stopPoll (poll id)
 A quick and dirty way of polling a group chat. SoftPoll takes any string as an answer, while HardPoll takes a number corresponding to a predetermined set of answers. After completion, the results can be exported to a .txt document, which can be linked to by the bot, or can be returned. Set to be anonymous, may be edited to add an option to make it possible to get direct user replies.
+
+You can only stop a poll if you created it.
 
 # Moods module
 Usage: !mood (mood)
