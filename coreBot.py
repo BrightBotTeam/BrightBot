@@ -74,5 +74,5 @@ class TwitterBot(object):
     #End of __init__
 BrightBot = TwitterBot()
 BrightBot.loadQuotes("quotes.p")
-while true:
+while true: #Once the Twitter library is added, this will be where things actually happen.
     pass
