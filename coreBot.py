@@ -7,9 +7,7 @@ def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
     quotes =  {}
-    commands = [
-        "!bestof", "lenny", "!outcome", "!poll", "!answer",
-        ]
+    commands = ["!bestof", "lenny", "!outcome", "!poll", "!answer"]
     def toDo(self, command, sender):
         doThis, data = commandGet.split(" ", 1)
         if doThis = BrightBot.commands[0]: #Best Of
