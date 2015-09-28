@@ -20,7 +20,7 @@ class TwitterBot(object):
             if action == "get":
                 self.getQuote(person, response)
             elif action == "add":
-                
+                self.getQuote
             elif action == "delete:
                 
             else:
@@ -39,9 +39,9 @@ class TwitterBot(object):
             pass
         elif doThis = BrightBot.commands[7]: #WhoAmI
             pass
+    #End of toDo
     def loadQuotes(self, saveFile):
         print("Attempting to load quotes from " + saveFile)
-        self.quotesNumber = 0
         try:
             f = open(saveFile, "rb")
             self.quotes = pickle.load(f)
@@ -78,12 +78,31 @@ class TwitterBot(object):
             print("Could not find quote number " + number + " for " + person + "! Returning False...")
             return False
     #End of getQuote
+    def addQuote(self, person, quote):
+        try:
+            self.quotes{person}
+            self.quotes{person}.append(quote):
+            return True
+        except KeyError:
+            self.quotes{person} = [quote]
+            return True
+    #End of addQuote
+    def delQuote(self, person, quote):
+        try:
+            del self.quotes{person}[quote]
+            return True
+        except KeyError:
+            return False
+        except IndexError:
+            return False
+    #End of delQuote
     def lenny(self):
         todaysDate = date.today()
         lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)" 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)", 5 : 6 : 7 : 8 : 9 : 10 : 11 : 12 : 13 : 14 : 15 : 16 : 17 : 18 : 19 : 20 : 21 : 2 2: 23 : 24 : 25 : 26 : 27 : 28 : 29 : 30 : 31 : }
         try:
             print lennyRepo[todaysDate.day]
             return lennyRepo[todaysDate.day]
+    #End of lenny
     def outcome(self, dice, sides, eventString):
         pseudorandom = 0
         total = 0
@@ -99,6 +118,7 @@ class TwitterBot(object):
         else:
             print(eventString + ":" + str(total) +  " out of " + str(maximumNumber) + ".")
             return eventString + ":" + str(total) +  " out of " + str(maximumNumber) + "."
+    #End of outcome
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
