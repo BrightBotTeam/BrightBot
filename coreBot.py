@@ -7,6 +7,38 @@ def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
     quotes =  {}
+    commands = [
+        "!bestof", "lenny", "!outcome", "!poll", "!answer",
+        ]
+    def toDo(self, command, sender):
+        doThis, data = commandGet.split(" ", 1)
+        if doThis = BrightBot.commands[0]: #Best Of
+            action, person, response = data.split(" ", 3)
+            action = action.lower()
+            person = person.lower()
+            response = response.lower()
+            if action == "get":
+                self.getQuote(person, response)
+            elif action == "add":
+                
+            elif action == "delete:
+                
+            else:
+                return "Unrecognized action."
+        elif doThis = BrightBot.commands[1]: #Lenny
+            pass 
+        elif doThis = BrightBot.commands[2]: #Outcome
+            pass
+        elif doThis = BrightBot.commands[3]: #Poll
+            pass
+        elif doThis = BrightBot.commands[4]: #Answer
+            pass
+        elif doThis = BrightBot.commands[5]: #Stop Poll
+            pass
+        elif doThis = BrightBot.commands[6]: #Moods
+            pass
+        elif doThis = BrightBot.commands[7]: #WhoAmI
+            pass
     def loadQuotes(self, saveFile):
         print("Attempting to load quotes from " + saveFile)
         self.quotesNumber = 0
@@ -75,4 +107,8 @@ class TwitterBot(object):
 BrightBot = TwitterBot()
 BrightBot.loadQuotes("quotes.p")
 while true: #Once the Twitter library is added, this will be where things actually happen.
-    pass
+    commandGet = "!outcome x, y, This is just a test."
+    commandSender = "Ne Zha"
+    commandGet = commandGet.lower()
+    BrightBot.toDo(commandGet, commandSender)
+
