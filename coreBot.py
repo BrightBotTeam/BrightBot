@@ -10,33 +10,36 @@ class TwitterBot(object):
     commands = ["!bestof", "lenny", "!outcome", "!poll", "!answer"]
     def toDo(self, command, sender):
         doThis, data = commandGet.split(" ", 1)
-        if doThis = BrightBot.commands[0]: #Best Of
+        if doThis == BrightBot.commands[0]: #Best Of
             action, person, response = data.split(" ", 3)
             action = action.lower()
             person = person.lower()
             response = response.lower()
             if action == "get":
-                self.getQuote(person, response)
+                return self.getQuote(person, response)
             elif action == "add":
-                self.getQuote
+                return self.addQuote(person, response)
             elif action == "delete:
-                
+                return self.delQuote(person, response)
             else:
-                return "Unrecognized action."
-        elif doThis = BrightBot.commands[1]: #Lenny
-            pass 
-        elif doThis = BrightBot.commands[2]: #Outcome
+                return "Unrecognized action, please check spelling."
+        elif doThis == BrightBot.commands[1]: #Lenny
+            return self.lenny()
+        elif doThis == BrightBot.commands[2]: #Outcome
+            x, y, event = data.split(" ", 2)
+            return self.outcome(x, y, event)
+        elif doThis == BrightBot.commands[3]: #Poll
             pass
-        elif doThis = BrightBot.commands[3]: #Poll
+        elif doThis == BrightBot.commands[4]: #Answer
             pass
-        elif doThis = BrightBot.commands[4]: #Answer
+        elif doThis == BrightBot.commands[5]: #Stop Poll
             pass
-        elif doThis = BrightBot.commands[5]: #Stop Poll
+        elif doThis == BrightBot.commands[6]: #Moods
+            return self.mood(data)
+        elif doThis == BrightBot.commands[7]: #WhoAmI
             pass
-        elif doThis = BrightBot.commands[6]: #Moods
-            pass
-        elif doThis = BrightBot.commands[7]: #WhoAmI
-            pass
+        else:
+            return "Unknown command."
     #End of toDo
     def loadQuotes(self, saveFile):
         print("Attempting to load quotes from " + saveFile)
@@ -128,5 +131,9 @@ while true: #Once the Twitter library is added, this will be where things actual
     commandGet = "!outcome x, y, This is just a test."
     commandSender = "Ne Zha"
     commandGet = commandGet.lower()
-    BrightBot.toDo(commandGet, commandSender)
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandOut)
+    if commandOut == false:
+        print("Oops! Something went wrong!")
+    
 
