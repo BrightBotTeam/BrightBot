@@ -7,7 +7,8 @@ def dialogprompt(title, text, style):
     ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
     quotes =  {}
-    commands = ["!bestof", "lenny", "!outcome", "!poll", "!answer"]
+    polls = {}
+    commands = ["!bestof", "lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls"]
     def toDo(self, command, sender):
         doThis, data = commandGet.split(" ", 1)
         if doThis == BrightBot.commands[0]: #Best Of
@@ -29,18 +30,30 @@ class TwitterBot(object):
             x, y, event = data.split(" ", 2)
             return self.outcome(x, y, event)
         elif doThis == BrightBot.commands[3]: #Poll
-            pass
+            if data[0] == "h":
+                try:
+                    question, answers = data.split("?", 1)
+                    return self.hardPoll(question, answers, sender)
+                except ValueError:
+                    return "Could not create poll! make sure you have at least one question mark at the end of your question!"
+            elif data[0] == "s"
+                placeHolder, actual = data.split(" ", 1)
+                return self.softPoll(data, sender)
+            else:
+                return False
         elif doThis == BrightBot.commands[4]: #Answer
-            pass
+            pollID, pollAns = data.split(" ", 1)
+            return self.Answer(pollID, pollAns)
         elif doThis == BrightBot.commands[5]: #Stop Poll
-            pass
+            return self.stopPolling(data, sender)
         elif doThis == BrightBot.commands[6]: #Moods
             return self.mood(data)
         elif doThis == BrightBot.commands[7]: #WhoAmI
-            pass
+            return self.identify()
+        elif doThis == BrightBot.commands[8]: #Current Polls
+            return "Current Polls:" + polls
         else:
             return "Unknown command."
-    #End of toDo
     def loadQuotes(self, saveFile):
         print("Attempting to load quotes from " + saveFile)
         try:
@@ -57,14 +70,12 @@ class TwitterBot(object):
                 f.close()
                 sys.exit()
         print("loadQuotes module finished.")
-    #End of loadQuotes
     def saveQuotes(self, saveFile):
         print("Attempting to save quotes to " + saveFile)
         f = open(saveFile, "wb")
         pickle.dump(self.quotes, f)
         f.close()
         print("Saved Successfuly.")
-    #End of saveQuotes
     def getQuote(self, person, number, sentRequest):
         print(sentRequest + " has requested quote number " + number " of " + person + ".")
         currentQuote = ""
@@ -78,7 +89,6 @@ class TwitterBot(object):
         except IndexError:
             print("Could not find quote number " + number + " for " + person + "! Returning False...")
             return False
-    #End of getQuote
     def addQuote(self, person, quote):
         try:
             self.quotes{person}
@@ -87,7 +97,6 @@ class TwitterBot(object):
         except KeyError:
             self.quotes{person} = [quote]
             return True
-    #End of addQuote
     def delQuote(self, person, quote):
         try:
             del self.quotes{person}[quote]
@@ -96,14 +105,12 @@ class TwitterBot(object):
             return False
         except IndexError:
             return False
-    #End of delQuote
     def lenny(self):
         todaysDate = date.today()
         lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)" 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)", 5 : 6 : 7 : 8 : 9 : 10 : 11 : 12 : 13 : 14 : 15 : 16 : 17 : 18 : 19 : 20 : 21 : 2 2: 23 : 24 : 25 : 26 : 27 : 28 : 29 : 30 : 31 : }
         try:
             print lennyRepo[todaysDate.day]
             return lennyRepo[todaysDate.day]
-    #End of lenny
     def outcome(self, dice, sides, eventString):
         pseudorandom = 0
         total = 0
@@ -119,15 +126,23 @@ class TwitterBot(object):
         else:
             print(eventString + ":" + str(total) +  " out of " + str(maximumNumber) + ".")
             return eventString + ":" + str(total) +  " out of " + str(maximumNumber) + "."
-    #End of outcome
+    def answer(self, pollID, pollAns):
+        try:
+            self.polls{pollID}.append(pollAns)
+            return "Answer successfully recorded."
+        except KeyError:
+            return "Oops! Couldn't find a key with that value."
+    def softPoll(ques, sender):
+        self.polls{ques + "###" + sender} = []
+    def hardPoll(ques, ans, sender):
+        self.polls{ques + "###" + sender} = [ans
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
         print("Last updated 9/21/2015")
-    #End of __init__
 BrightBot = TwitterBot()
 BrightBot.loadQuotes("quotes.p")
-while true: #Once the Twitter library is added, this will be where things actually happen.
+while true: #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
     commandGet = "!outcome x, y, This is just a test."
     commandSender = "Ne Zha"
     commandGet = commandGet.lower()
@@ -135,5 +150,7 @@ while true: #Once the Twitter library is added, this will be where things actual
     print(commandOut)
     if commandOut == false:
         print("Oops! Something went wrong!")
+    else:
+        
     
 
