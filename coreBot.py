@@ -9,16 +9,20 @@ class TwitterBot(object):
     quotes =  {}
     polls = {}
     quotesSaveFile = "quotes.p"
-    commands = ["!bestof", "lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls"]
+    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls"]
     def toDo(self, command, sender):
-        doThis, data = commandGet.split(" ", 1)
+        try:
+            doThis, data = command.split(" ", 1)
+        except ValueError:
+            doThis = command
         if doThis == BrightBot.commands[0]: #Best Of
-            action, person, response = data.split(" ", 3)
+            action, person, response = data.split(" ", 2)
             action = action.lower()
             person = person.lower()
             response = response.lower()
             if action == "get":
-                return self.getQuote(person, response)
+                response = int(response)
+                return self.getQuote(person, response, sender)
             elif action == "add":
                 return self.addQuote(person, response)
             elif action == "delete":
@@ -75,12 +79,12 @@ class TwitterBot(object):
         print("loadQuotes module finished.")
     def saveQuotes(self):
         print("Attempting to save quotes to " + self.quotesSaveFile)
-        f = open(quotesSaveFile, "wb")
+        f = open(self.quotesSaveFile, "wb")
         pickle.dump(self.quotes, f)
         f.close()
         print("Saved Successfuly.")
     def getQuote(self, person, number, sentRequest):
-        print(sentRequest + " has requested quote number " + number + " of " + person + ".")
+        print(sentRequest + " has requested quote number " + str(number) + " of " + person + ".")
         currentQuote = ""
         try:
             currentQuote = self.quotes[person][number - 1]
@@ -111,10 +115,11 @@ class TwitterBot(object):
         except IndexError:
             return False
     def lenny(self):
-        todaysDate = date.today()
-        lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)", 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)"}
-        print(lennyRepo[todaysDate.day])
-        return lennyRepo[todaysDate.day]
+        return "!Lenny is still being tested! Cannot do this."
+        #todaysDate = date.today() #Figure out why this line is breaking.
+        #lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)", 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)"}
+        #print(lennyRepo[todaysDate.day])
+        #return lennyRepo[todaysDate.day]
     def outcome(self, dice, sides, eventString):
         pseudorandom = 0
         total = 0
@@ -155,37 +160,36 @@ class TwitterBot(object):
         pID, pollRest = pollKey.split(". ", 1)
         pQues, pAsker = pollKey.split("###", 1)
         if pQues(2) == "H":
-            print(pAsker + " has created a new poll (ID " + pID + "): " +pQues)
+            print(pAsker + " has created a new poll (ID " + pID + "): " + pQues)
             for i in polls[pollKey]:
                 print(i)
         else:
-            print(pAsker + " has created a new poll (ID " + pID + "): " +pQues)
+            print(pAsker + " has created a new poll (ID " + pID + "): " + pQues)
             print("Type !answer, followed by your answer or answer ID to reply!")
+    def stopPolling(self, data, sender):
+        pass        
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
         print("Last updated 9/21/2015")
 BrightBot = TwitterBot()
 BrightBot.loadQuotes()
-def checkTrue(var):
-    if var == True:
-        return
-    elif var == False:
-        print("Oops! Something went wrong!")
-    else:
-        return "Invalid"
 def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
     commandGet = "!outcome 7 5 This is just a test."
     commandSender = "Ne Zha"
     commandGet = commandGet.lower()
     commandOut = BrightBot.toDo(commandGet, commandSender)
-    checkTrue(commandOut)
     print(commandOut)
-    commandGet = "!bestOf add NeZha This is how I like to test my code!"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
-    checkTrue(commandOut)
-    print(commandOut)
+    #commandGet = "!bestOf add NeZha This is how I like to test my code!"
+    #commandGet = commandGet.lower()
+    #commandOut = BrightBot.toDo(commandGet, commandSender)
+    #print(commandOut)
     commandGet = "!bestOf get NeZha 1"
+    commandGet = commandGet.lower()
     commandOut = BrightBot.toDo(commandGet, commandSender)
     print(commandOut)
+    commandOut = BrightBot.toDo("!lenny", commandSender)
+    print(commandOut)
+    
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
+testFunctionality()
