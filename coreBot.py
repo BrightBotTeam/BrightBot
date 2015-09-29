@@ -13,8 +13,10 @@ class TwitterBot(object):
     def toDo(self, command, sender):
         try:
             doThis, data = command.split(" ", 1)
+            doThis = doThis.lower()
         except ValueError:
             doThis = command
+            doThis = doThis.lower()
         if doThis == BrightBot.commands[0]: #Best Of
             action, person, response = data.split(" ", 2)
             action = action.lower()
@@ -35,13 +37,13 @@ class TwitterBot(object):
             x, y, event = data.split(" ", 2)
             return self.outcome(x, y, event)
         elif doThis == BrightBot.commands[3]: #Poll
-            if data[0] == "h":
-                try:
+            if data[0].lower() == "h":
+                #try:
                     question, answers = data.split("?", 1)
                     return self.hardPoll(question, answers, sender)
-                except ValueError:
-                    return "Could not create poll! make sure you have at least one question mark at the end of your question!"
-            elif data[0] == "s":
+                #except ValueError:
+                    #return "Could not create poll! make sure you have at least one question mark at the end of your question!"
+            elif data[0].lower == "s":
                 placeHolder, actual = data.split(" ", 1)
                 return self.softPoll(actual, sender)
             else:
@@ -143,29 +145,31 @@ class TwitterBot(object):
             return "Answer successfully recorded."
         except KeyError:
             return "Oops! Couldn't find a key with that value."
-    def softPoll(ques, sender):
-        newPollName = len(polls) + ".(S)" + ques + "###" + sender 
+    def softPoll(self, ques, sender):
+        newPollName = str(len(self.polls)+1) + ". (S) " + ques + "###" + sender 
         self.polls[newPollName] = []
         self.decNewPoll(newPollName)
         return "Poll created successfully."
-    def hardPoll(ques, ans, sender):
-        newPollName = len(polls) + ".(H) " + ques + "###" + sender
+    def hardPoll(self, ques, ans, sender):
+        newPollName = str(len(self.polls)+1) + ". (H) " + ques + "###" + sender
         self.polls[newPollName] = {}
         while len(ans) > 1:
-            curAns, ans = ans.split(". ", 1)
+            curAns, ans = ans.split(".", 1)
             self.polls[newPollName][curAns] = ""
-        self.decNewPoll()
+        self.decNewPoll(newPollName)
         return "Poll created successfully."
     def decNewPoll(self, pollKey):
         pID, pollRest = pollKey.split(". ", 1)
         pQues, pAsker = pollKey.split("###", 1)
-        if pQues(2) == "H":
-            print(pAsker + " has created a new poll (ID " + pID + "): " + pQues)
+        if pQues[2] == "H":
+            print(pAsker + " has created a new poll (ID " + pID + "): " + pQues + "?")
             for i in polls[pollKey]:
+                print("test")
                 print(i)
         else:
-            print(pAsker + " has created a new poll (ID " + pID + "): " + pQues)
-            print("Type !answer, followed by your answer or answer ID to reply!")
+            print(pAsker + " has created a new poll (ID " + pID + "): " + pQues + "?")
+
+        print("Type !answer, followed by your answer or answer ID to reply!")
     def stopPolling(self, data, sender):
         pass        
     def __init__(self): 
@@ -177,7 +181,6 @@ BrightBot.loadQuotes()
 def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
     commandGet = "!outcome 7 5 This is just a test."
     commandSender = "Ne Zha"
-    commandGet = commandGet.lower()
     commandOut = BrightBot.toDo(commandGet, commandSender)
     print(commandOut)
     #commandGet = "!bestOf add NeZha This is how I like to test my code!"
@@ -185,11 +188,14 @@ def testFunctionality(): #Once the Twitter library is added, this will be where 
     #commandOut = BrightBot.toDo(commandGet, commandSender)
     #print(commandOut)
     commandGet = "!bestOf get NeZha 1"
-    commandGet = commandGet.lower()
     commandOut = BrightBot.toDo(commandGet, commandSender)
     print(commandOut)
     commandOut = BrightBot.toDo("!lenny", commandSender)
     print(commandOut)
-    
+    commandGet = "!poll H What's my favorite letter of the alphabet? Purple. Pink. Yellow."
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandOut)
+    commandGet = "!answer"
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
 testFunctionality()
+
