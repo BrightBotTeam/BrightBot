@@ -38,7 +38,7 @@ class TwitterBot(object):
                     return "Could not create poll! make sure you have at least one question mark at the end of your question!"
             elif data[0] == "s"
                 placeHolder, actual = data.split(" ", 1)
-                return self.softPoll(data, sender)
+                return self.softPoll(actual, sender)
             else:
                 return False
         elif doThis == BrightBot.commands[4]: #Answer
