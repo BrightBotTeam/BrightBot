@@ -8,6 +8,7 @@ def dialogprompt(title, text, style):
 class TwitterBot(object):
     quotes =  {}
     polls = {}
+    quotesSaveFile = "quotes.p"
     commands = ["!bestof", "lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls"]
     def toDo(self, command, sender):
         doThis, data = commandGet.split(" ", 1)
@@ -20,7 +21,7 @@ class TwitterBot(object):
                 return self.getQuote(person, response)
             elif action == "add":
                 return self.addQuote(person, response)
-            elif action == "delete:
+            elif action == "delete":
                 return self.delQuote(person, response)
             else:
                 return "Unrecognized action, please check spelling."
@@ -36,7 +37,7 @@ class TwitterBot(object):
                     return self.hardPoll(question, answers, sender)
                 except ValueError:
                     return "Could not create poll! make sure you have at least one question mark at the end of your question!"
-            elif data[0] == "s"
+            elif data[0] == "s":
                 placeHolder, actual = data.split(" ", 1)
                 return self.softPoll(actual, sender)
             else:
@@ -54,33 +55,35 @@ class TwitterBot(object):
             return "Current Polls:" + polls
         else:
             return "Unknown command."
-    def loadQuotes(self, saveFile):
-        print("Attempting to load quotes from " + saveFile)
+    def loadQuotes(self):
+        print("Attempting to load quotes from " + self.quotesSaveFile)
         try:
-            f = open(saveFile, "rb")
+            f = open(self.quotesSaveFile, "rb")
             self.quotes = pickle.load(f)
             print("Loaded quotes from " + str(len(self.quotes)) + " different people!")
         except FileNotFoundError:
             answer = dialogprompt("BrightBot Error", "Brightbox could not load a quotes file!\nWould you like to create a new quotes file?", 1)
             if 'yes':
-                f = open(saveFile, "wb")
+                f = open(self.quotesSaveFile, "wb")
                 print("New save file created.")
                 f.close()
             else:
                 f.close()
                 sys.exit()
+        except EOFError:
+            print("The quotes file is empty, no quotes loaded :(")
         print("loadQuotes module finished.")
-    def saveQuotes(self, saveFile):
-        print("Attempting to save quotes to " + saveFile)
-        f = open(saveFile, "wb")
+    def saveQuotes(self):
+        print("Attempting to save quotes to " + self.quotesSaveFile)
+        f = open(quotesSaveFile, "wb")
         pickle.dump(self.quotes, f)
         f.close()
         print("Saved Successfuly.")
     def getQuote(self, person, number, sentRequest):
-        print(sentRequest + " has requested quote number " + number " of " + person + ".")
+        print(sentRequest + " has requested quote number " + number + " of " + person + ".")
         currentQuote = ""
         try:
-            currentQuote = Quotes{person}[number - 1]
+            currentQuote = self.quotes[person][number - 1]
             print(currentQuote)
             return currentQuote
         except KeyError:
@@ -91,15 +94,17 @@ class TwitterBot(object):
             return False
     def addQuote(self, person, quote):
         try:
-            self.quotes[person]
-            self.quotes[person].append(quote):
+            self.quotes[person].append(quote)
+            self.saveQuotes()
             return True
         except KeyError:
             self.quotes[person] = [quote]
+            self.saveQuotes()
             return True
     def delQuote(self, person, quote):
         try:
-            del self.quotes{person}[quote]
+            del self.quotes[person][quote]
+            self.saveQuotes()
             return True
         except KeyError:
             return False
@@ -107,16 +112,17 @@ class TwitterBot(object):
             return False
     def lenny(self):
         todaysDate = date.today()
-        lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)" 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)", 5 : 6 : 7 : 8 : 9 : 10 : 11 : 12 : 13 : 14 : 15 : 16 : 17 : 18 : 19 : 20 : 21 : 2 2: 23 : 24 : 25 : 26 : 27 : 28 : 29 : 30 : 31 : }
-        try:
-            print lennyRepo[todaysDate.day]
-            return lennyRepo[todaysDate.day]
+        lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)", 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)"}
+        print(lennyRepo[todaysDate.day])
+        return lennyRepo[todaysDate.day]
     def outcome(self, dice, sides, eventString):
         pseudorandom = 0
         total = 0
-        maximumNumber = sides * dice
-        while pseudorandom < sides:
-            total = total + random.randint(0, sides)
+        sideNo = int(sides)
+        diceNo = int(dice)
+        maximumNumber = sideNo * diceNo
+        while pseudorandom < diceNo:
+            total = total + random.randint(1, sideNo)
             pseudorandom = pseudorandom + 1
         if eventString == "-r":
             return total
@@ -128,39 +134,58 @@ class TwitterBot(object):
             return eventString + ":" + str(total) +  " out of " + str(maximumNumber) + "."
     def answer(self, pollID, pollAns):
         try:
-            self.polls{pollID}.append(pollAns)
+            self.polls[pollID].append(pollAns)
             return "Answer successfully recorded."
         except KeyError:
             return "Oops! Couldn't find a key with that value."
     def softPoll(ques, sender):
-        self.polls[ques + "###" + sender] = []
-        self.decNewPoll()
+        newPollName = len(polls) + ".(S)" + ques + "###" + sender 
+        self.polls[newPollName] = []
+        self.decNewPoll(newPollName)
         return "Poll created successfully."
     def hardPoll(ques, ans, sender):
-        self.polls[ques + "###" + sender] = {}
+        newPollName = len(polls) + ".(H) " + ques + "###" + sender
+        self.polls[newPollName] = {}
         while len(ans) > 1:
             curAns, ans = ans.split(". ", 1)
-            self.polls[ques + "###" + sender][curAns] = 0
+            self.polls[newPollName][curAns] = ""
         self.decNewPoll()
         return "Poll created successfully."
-    def decNewPoll(self):
-        dictLength = len(polls)
-        question, user = polls[dictLength]
-        print 
+    def decNewPoll(self, pollKey):
+        pID, pollRest = pollKey.split(". ", 1)
+        pQues, pAsker = pollKey.split("###", 1)
+        if pQues(2) == "H":
+            print(pAsker + " has created a new poll (ID " + pID + "): " +pQues)
+            for i in polls[pollKey]:
+                print(i)
+        else:
+            print(pAsker + " has created a new poll (ID " + pID + "): " +pQues)
+            print("Type !answer, followed by your answer or answer ID to reply!")
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
         print("Last updated 9/21/2015")
 BrightBot = TwitterBot()
-BrightBot.loadQuotes("quotes.p")
-while true: #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
-    commandGet = "!outcome x, y, This is just a test."
+BrightBot.loadQuotes()
+def checkTrue(var):
+    if var == True:
+        return
+    elif var == False:
+        print("Oops! Something went wrong!")
+    else:
+        return "Invalid"
+def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
+    commandGet = "!outcome 7 5 This is just a test."
     commandSender = "Ne Zha"
     commandGet = commandGet.lower()
     commandOut = BrightBot.toDo(commandGet, commandSender)
+    checkTrue(commandOut)
     print(commandOut)
-    if commandOut == false:
-        print("Oops! Something went wrong!")
-    else:
-        
+    commandGet = "!bestOf add NeZha This is how I like to test my code!"
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    checkTrue(commandOut)
+    print(commandOut)
+    commandGet = "!bestOf get NeZha 1"
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandOut)
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
