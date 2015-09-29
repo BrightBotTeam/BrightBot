@@ -91,11 +91,11 @@ class TwitterBot(object):
             return False
     def addQuote(self, person, quote):
         try:
-            self.quotes{person}
-            self.quotes{person}.append(quote):
+            self.quotes[person]
+            self.quotes[person].append(quote):
             return True
         except KeyError:
-            self.quotes{person} = [quote]
+            self.quotes[person] = [quote]
             return True
     def delQuote(self, person, quote):
         try:
@@ -133,9 +133,20 @@ class TwitterBot(object):
         except KeyError:
             return "Oops! Couldn't find a key with that value."
     def softPoll(ques, sender):
-        self.polls{ques + "###" + sender} = []
+        self.polls[ques + "###" + sender] = []
+        self.decNewPoll()
+        return "Poll created successfully."
     def hardPoll(ques, ans, sender):
-        self.polls{ques + "###" + sender} = [ans
+        self.polls[ques + "###" + sender] = {}
+        while len(ans) > 1:
+            curAns, ans = ans.split(". ", 1)
+            self.polls[ques + "###" + sender][curAns] = 0
+        self.decNewPoll()
+        return "Poll created successfully."
+    def decNewPoll(self):
+        dictLength = len(polls)
+        question, user = polls[dictLength]
+        print 
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
@@ -152,5 +163,4 @@ while true: #Once the Twitter library is added, this will be where things actual
         print("Oops! Something went wrong!")
     else:
         
-    
-
+#Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
