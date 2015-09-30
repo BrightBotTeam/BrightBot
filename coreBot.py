@@ -44,7 +44,7 @@ class TwitterBot(object):
                 #except ValueError:
                     #return "Could not create poll! make sure you have at least one question mark at the end of your question!"
             elif data[0].lower == "s":
-                placeHolder, actual = data.split(" ", 1)
+                placeHolder, actual = data.split("?", 1)
                 return self.softPoll(actual, sender)
             else:
                 return False
@@ -153,8 +153,10 @@ class TwitterBot(object):
     def hardPoll(self, ques, ans, sender):
         newPollName = str(len(self.polls)+1) + ". (H) " + ques + "###" + sender
         self.polls[newPollName] = {}
+        ansRepo = ansRepo
         while len(ans) > 1:
-            curAns, ans = ans.split(".", 1)
+            curAns, ansRepo = ansRepo.split(".", 1)
+            print("One iteration.")
             self.polls[newPollName][curAns] = ""
         self.decNewPoll(newPollName)
         return "Poll created successfully."
@@ -198,4 +200,3 @@ def testFunctionality(): #Once the Twitter library is added, this will be where 
     commandGet = "!answer"
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
 testFunctionality()
-
