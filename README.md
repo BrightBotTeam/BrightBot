@@ -44,3 +44,7 @@ Usage: !whoami
 
 Returns a quick little message about the history of brightbot
 
+# Rules Module
+Usage: !rules OR !fakerules
+
+Returns a little list of rules that you can set in the rules.txt file. !fakerules returns a list of rules you can set in the fakerules.txt file. 
