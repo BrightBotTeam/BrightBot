@@ -45,6 +45,11 @@ Usage: !whoami
 Returns a quick little message about the history of brightbot
 
 # Rules Module
-Usage: !rules OR !fakerules
+Usage: !rules OR !jokerules
 
-Returns a little list of rules that you can set in the rules.txt file. !fakerules returns a list of rules you can set in the fakerules.txt file. 
+Returns a little list of rules that you can set in the rules.txt file. !fakerules returns a list of rules you can set in the jokerules.txt file. 
+
+# WhoIs Module
+Usage: !whois (name) or !whois (set) (define)
+
+Similar to the quotes command, but essentially provides a "universal quote" for each individual. Once again, this is stored by default in "whois.p"
