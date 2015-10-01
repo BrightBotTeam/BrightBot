@@ -1,14 +1,13 @@
-import ctypes
 import pickle
 import sys
 import datetime
 import random
-def dialogprompt(title, text, style):
-    ctypes.windll.user32.MessageBoxW(0, text, title, style)
 class TwitterBot(object):
     quotes =  {}
     polls = {}
+    whois = []
     quotesSaveFile = "quotes.p"
+    whoisSaveFile = "whois.p"
     commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls"]
     def toDo(self, command, sender):
         try:
@@ -38,11 +37,11 @@ class TwitterBot(object):
             return self.outcome(x, y, event)
         elif doThis == BrightBot.commands[3]: #Poll
             if data[0].lower() == "h":
-                #try:
+                try:
                     question, answers = data.split("? ", 1)
                     return self.hardPoll(question, answers, sender)
-                #except ValueError:
-                    #return "Could not create poll! make sure you have at least one question mark at the end of your question!"
+                except ValueError:
+                    return "Could not create poll! make sure you have at least one question mark at the end of your question!"
             elif data[0].lower == "s":
                 placeHolder, actual = data.split("? ", 1)
                 return self.softPoll(actual, sender)
@@ -68,16 +67,27 @@ class TwitterBot(object):
             self.quotes = pickle.load(f)
             print("Loaded quotes from " + str(len(self.quotes)) + " different people!")
         except FileNotFoundError:
-            answer = dialogprompt("BrightBot Error", "Brightbox could not load a quotes file!\nWould you like to create a new quotes file?", 1)
-            if 'yes':
+                print("Could not find quotes file! Making one instead...")
                 f = open(self.quotesSaveFile, "wb")
-                print("New save file created.")
+                print("New quotes file created.")
                 f.close()
-            else:
-                f.close()
-                sys.exit()
         except EOFError:
             print("The quotes file is empty, no quotes loaded :(")
+            f.close()
+        print("loadQuotes module finished.")
+        print("Attempting to load whois from " + self.whoisSaveFile)
+        try:
+            f = open(self.whoisSaveFile, "rb")
+            self.whois = pickle.load(f)
+            print("Loaded quotes from " + str(len(self.quotes)) + " different people!")
+        except FileNotFoundError:
+            print("Could not find whois file! Creating one instead...")
+            f = open(self.whoisSaveFile, "wb")
+            print("New whois file created.")
+            f.close()
+        except EOFError:
+            print("The whois file is empty, no quotes loaded :(")
+            f.close()
         print("loadQuotes module finished.")
     def saveQuotes(self):
         print("Attempting to save quotes to " + self.quotesSaveFile)
@@ -189,12 +199,13 @@ class TwitterBot(object):
             print(pAsker + " has created a new poll (ID " + pID + "): " + pQues + "?")
 
         print("Type !answer, followed by your answer or answer ID to reply!")
-    def stopPolling(self, data, sender):
-        pass        
+    def stopPolling(self, pollID, sender):
+        
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
         print("Last updated 9/21/2015")
+        self.loadQuotes()
 BrightBot = TwitterBot()
 BrightBot.loadQuotes()
 def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
@@ -341,7 +352,16 @@ testFunctionality()
 
         print("Type !answer, followed by your answer or answer ID to reply!")
     def stopPolling(self, data, sender):
-        pass        
+        poll
+        for i in self.polls:
+            if i[0] == pollID:
+                pollName, pollUser = i.split("###")
+                if pollUser == sender:
+                    print("Authenticated. Stopping poll and saving file.")
+                elif pollUser != sender:
+                    return "You did not create that poll."
+                else:
+                    return False
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
