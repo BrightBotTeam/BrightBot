@@ -17,7 +17,9 @@ When a person has no more quotes, their key is deleted from the file and can no 
 
 ##Lenny
 Usage: !lenny
+
 Ex. !lenny
+
 Return a different "lenny" based on the current day of the month. It's that simple
 
 ## Outcome
@@ -52,7 +54,7 @@ Returns a quick little message about your version of brightbot
 # Rules 
 Usage: !rules OR !jokerules
 
-Returns a little list of rules that you can set in the rules.txt file. !fakerules returns a list of rules you can set in the jokerules.txt file. 
+Returns a little list of rules that you can set in the rules.txt file. !fakerules returns a list of joke rules (or regular rules, whatever you want) that )you can set in the fakerules.txt file. 
 
 ## WhoIs
 Usage: 
