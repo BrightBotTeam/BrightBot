@@ -1,8 +1,8 @@
 # BrightBot
 An IRCBot infrastructure, the current project is meant to recreate an IRCBot in a Twitter Chat Room. **UNDER DEVELOPMENT**
 
-# Modules
-##BestOf Module
+# Features:
+##BestOf
 Usage: !bestof (get/add/delete) [(person/random if get) (person if add/delete)] [(number if get/delete) ("Quote" if add)]
 
 Ex. !bestof add Tom I like my men like I like my beer. Not trying to sleep with me!
@@ -15,12 +15,12 @@ The minus 1 is added because Python stores lists at values one less than display
 
 When a person has no more quotes, their key is deleted from the file and can no longer be called until it is recreated by adding more quotes to them.
 
-## Lenny Module
+##Lenny
 Usage: !lenny
 Ex. !lenny
 Return a different "lenny" based on the current day of the month. It's that simple
 
-## Outcome Module
+## Outcome
 Usage: !outcome x, y, ("Event String" or flag)
 
 Essentially a glorified dice roll command, rolls x number of y sided dice, and prints out '"Event String" + total + highest possible total. TL:DR; generates x numbers between 0 and y, adds them together, and appends them to  "Event String"
@@ -28,7 +28,7 @@ Essentially a glorified dice roll command, rolls x number of y sided dice, and p
 Replacing "Event String" with the -r flag will instead **return** only total.
 Replacing "Event String" with the -p flag will instead **print** only total.
 
-## Poll module
+## Poll
 Usage: !poll (hard/soft), (Question)[If hard then add: , (answer 1), (answer 2), (etc)]
 
 !answer (poll id) (Answer string if soft poll, answer number if hard poll)
@@ -39,22 +39,22 @@ A quick and dirty way of polling a group chat. SoftPoll takes any string as an a
 
 Set to be anonymous, may be edited to add an option to make it possible to get direct user replies. You can only stop a poll if you created it.
 
-## Moods module
+## Moods
 Usage: !mood (mood)
 
 Changes the name of the chat to an appropriate mood setting. !reset can also be called to return it to whatever the default Chat setting was. 
 
-## Who Am I module
+## Who Am I
 Usage: !whoami
 
-Returns a quick little message about the history of brightbot
+Returns a quick little message about your version of brightbot
 
-# Rules Module
+# Rules 
 Usage: !rules OR !jokerules
 
 Returns a little list of rules that you can set in the rules.txt file. !fakerules returns a list of rules you can set in the jokerules.txt file. 
 
-## WhoIs Module
+## WhoIs
 Usage: 
 
 !whois (name)
