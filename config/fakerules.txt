@@ -1,0 +1,2 @@
+Insert some not so serious rules for your bot to call here by editing /config/fakerules.txt!
+Do note that you must reboot the bot before they will be added.
