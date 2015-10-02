@@ -13,8 +13,6 @@ Visual disambaguation: Quotes{"PersonName(key)" : ["Quote one", "Quote two"]}. D
 
 The minus 1 is added because Python stores lists at values one less than displayed. Since this is intended for people who may not be computer savvy, this was added for simplicity's sake.
 
-When a person has no more quotes, their key is deleted from the file and can no longer be called until it is recreated by adding more quotes to them.
-
 ##Lenny
 Usage: !lenny
 
@@ -31,20 +29,33 @@ Replacing "Event String" with the -r flag will instead **return** only total.
 Replacing "Event String" with the -p flag will instead **print** only total.
 
 ## Poll
-Usage: !poll (hard/soft), (Question)[If hard then add: , (answer 1), (answer 2), (etc)]
+Usage: !poll (hard/soft), (Question)?[If hard then add: , (answer 1). (answer 2). (etc)]
 
 !answer (poll id) (Answer string if soft poll, answer number if hard poll)
 
 !stopPoll (poll id)
 
-A quick and dirty way of polling a group chat. SoftPoll takes any string as an answer, while HardPoll takes a number corresponding to a predetermined set of answers. After completion, the results are returned, which can be linked to by the bot, for example. 
+A quick and dirty way of polling a group chat. SoftPoll takes any string as an answer, while HardPoll takes a number
+corresponding to a predetermined set of answers. After completion, the results are returned, which can be linked to 
+by the bot, for example. 
 
-Set to be anonymous, may be edited to add an option to make it possible to get direct user replies. You can only stop a poll if you created it.
+Set to be anonymous, may be edited to add an option to make it possible to get direct user replies. You can only stop a poll
+if you created it.
+
+There are 2 restrictions to this due to the formatting of the file. You may only have one question mark in your poll 
+question for hard polls, and may not have 3 Number signs (###) consecutively at any place in the  file.
+
+Polls are not persistant, restarting the bot will delete any active polls, and their data.
 
 ## Moods
-Usage: !mood (mood)
+Usage: 
 
-Changes the name of the chat to an appropriate mood setting. !reset can also be called to return it to whatever the default Chat setting was. 
+!mood (mood)
+
+!reset
+
+Changes the name of the chat to an appropriate mood setting. !reset can also be called to return it to whatever the default
+Chat name was. 
 
 ## Who Am I
 Usage: !whoami
