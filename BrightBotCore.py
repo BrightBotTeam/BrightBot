@@ -8,10 +8,10 @@ class TwitterBot(object):
     whois = {}
     rules = ""
     fakerules = ""
-    whoisSaveFile = "/data/whois.p"
-    quotesSaveFile = "/data/quotes.p"
-    rulesSaveFile = "/config/rules.txt"
-    fakeRulesSaveFile = "/config/fakerules.txt"
+    whoisSaveFile = "whois.p"
+    quotesSaveFile = "quotes.p"
+    rulesSaveFile = "rules.txt"
+    fakeRulesSaveFile = "fakerules.txt"
     currExp = {}
     iAm = "I am Brightbot. I am a chatroom robot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
     commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget"]
@@ -31,54 +31,54 @@ class TwitterBot(object):
             response = response.lower()
             if action == "get":
                 response = int(response)
-                return self.getQuote(person, response, sender)
+                return "@" + sender + ": " + self.getQuote(person, response, sender)
             elif action == "add":
-                return self.addQuote(person, response)
+                return "@" + sender + ": " + self.addQuote(person, response)
             elif action == "delete":
-                return self.delQuote(person, response)
+                return "@" + sender + ": " + self.delQuote(person, response)
             else:
-                return "Unrecognized action, please check spelling."
+                return "@" + sender + ": Unrecognized action, please check spelling."
         elif doThis == BrightBot.commands[1]: #Lenny
-            return self.lenny()
+            return "@" + sender + ": " + self.lenny()
         elif doThis == BrightBot.commands[2]: #Outcome
             x, y, event = data.split(" ", 2)
-            return self.outcome(x, y, event)
+            return "@" + sender + ": " + self.outcome(x, y, event)
         elif doThis == BrightBot.commands[3]: #Poll
             if data[0].lower() == "h":
                 try:
                     question, answers = data.split("? ", 1)
-                    return self.hardPoll(question, answers, sender)
+                    return "@" + sender + ": " + self.hardPoll(question, answers, sender)
                 except ValueError:
-                    return "Could not create poll! make sure you have at least one question mark at the end of your question!"
+                    return "@" + sender + ": Could not create poll! make sure you have at least one question mark at the end of your question!"
             elif data[0].lower == "s":
                 placeHolder, actual = data.split("? ", 1)
-                return self.softPoll(actual, sender)
+                return "@" + sender + ": " + self.softPoll(actual, sender)
             else:
                 return False
         elif doThis == BrightBot.commands[4]: #Answer
             pollID, pollAns = data.split(" ", 1)
-            return self.answer(pollID, pollAns)
+            return "@" + sender + ": " + self.answer(pollID, pollAns)
         elif doThis == BrightBot.commands[5]: #Stop Poll
-            return self.stopPolling(data, sender)
+            return "@" + sender + ": " + self.stopPolling(data, sender)
         elif doThis == BrightBot.commands[6]: #Moods
-            return self.mood(data)
+            return "@" + sender + ": " + self.mood(data)
         elif doThis == BrightBot.commands[7]: #WhoAmI
-            return self.iAm
+            return "@" + sender + ": " + self.iAm
         elif doThis == BrightBot.commands[8]: #Current Polls
-            return "Current Polls:" + polls
+            return "@" + sender + ": Current Polls:" + str(self.polls)
         elif doThis == BrightBot.commands[9]: #Rules
-            return BrightBot.rules()
+            return "@" + sender + ": " + BrightBot.rules()
         elif doThis == BrightBot.commands[10]: #Fake Rules
-            return BrightBot.fakeRules()
+            return "@" + sender + ": " + BrightBot.fakeRules()
         elif doThis == BrightBot.commands[11]: #Whois
-            return self.whoIs()
+            return "@" + sender + ": " + self.whoIs(data)
         elif doThis == BrightBot.commands[12]: #Remember
             remWho, remWhat = data.split(" ", 1)
-            return self.remember(remWho, remWhat)
+            return "@" + sender + ": " + self.remember(remWho, remWhat)
         elif doThis == BrightBot.commands[13]: #Forget
-            return self.forget(data)
+            return "@" + sender + ": " + self.forget(data)
         else:
-            return "Unknown command."
+            return "@" + sender + ": Unknown command."
     def loadFiles(self):
         print("Attempting to load quotes from " + self.quotesSaveFile)
         try:
@@ -112,7 +112,7 @@ class TwitterBot(object):
                 self.rules = myFile.read()
         except FileNotFoundError:
                 print("Could not find rules file! Making one instead...")
-                f = open(self.rulesSaveFule, "w")
+                f = open(self.rulesSaveFile, "w")
                 print("New rules save file created.")
                 f.close()
         except EOFError:
@@ -124,7 +124,7 @@ class TwitterBot(object):
                 self.fakeRules = myFile.read()
         except FileNotFoundError:
                 print("Could not find fake rules file! Making one instead...")
-                f = open(self.fakeRulesSaveFule, "w")
+                f = open(self.fakeRulesSaveFile, "w")
                 print("New rules save file created.")
                 f.close()
         except EOFError:
@@ -204,9 +204,7 @@ class TwitterBot(object):
                 if i[4].lower() == "h":
                     for j in self.polls[i]:
                         repeatNoAns = repeatNoAns + 1
-                        print("repeatNoAns: " + str(repeatNoAns))
                         if repeatNoAns == int(pollAns):
-                            print("Success 2!")
                             self.polls[pushAnsTo][j] = self.polls[pushAnsTo][j]+ 1
                             return "Answer Recorded Successfully."
                     return "Failed!"
@@ -214,7 +212,8 @@ class TwitterBot(object):
                     self.polls[pushAnsTo].append(pollAns)
                     return "Answer Recorded Successfully."
                 else:
-                    return "Hi there"
+                    return "Something went wrong"
+        return "Could not find a poll with that ID!"
     def softPoll(self, ques, sender):
         if data[0] == "S":
             oldData, newPollStuff = ques.split("S", 1)
@@ -285,18 +284,19 @@ class TwitterBot(object):
         print("Saved Successfuly.")
     def forget(self, who):
         try:
-            del self.whois(who)
+            del self.whois[who]
             return who + " has been forgotten."
         except KeyError:
             try: 
                 dummyKey, dummySplit = who.split(" ", 1)
-                del self.whois(dummyKey)
+                del self.whois[dummyKey]
                 return who + " has been forgotten."
             except KeyError:
                 return "I don't know who " + who + " is!"
     def remember(self, who, what):
         self.whois[who] = what
         return "I'll remember that"
+        self.saveWhois()
     def whoIs(self, who):
         try:
             return who + self.whois[who]
@@ -312,32 +312,33 @@ class TwitterBot(object):
         print("Last updated 9/21/2015")
         self.loadFiles()
 BrightBot = TwitterBot()
-def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
-    commandGet = "!outcome 7 5 This is just a test."
+def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced withcommandGet = "!currentpolls"
+    commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
     commandSender = "Ne Zha"
     commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandGet)
     print(commandOut)
-    #commandGet = "!bestOf add NeZha This is how I like to test my code!"
-    #commandGet = commandGet.lower()
-    #commandOut = BrightBot.toDo(commandGet, commandSender)
-    #print(commandOut)
-    commandGet = "!bestOf get NeZha 1"
+    commandGet = "!whois Ne Zha"
     commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandGet)
     print(commandOut)
-    commandOut = BrightBot.toDo("!lenny", commandSender)
-    print(commandOut)
-    commandGet = "!poll H What's my favorite letter of the alphabet? Purple. Pink. Yellow."
-    commandOut = BrightBot.toDo(commandGet, commandSender)
-    print(commandOut)
-    commandGet = "!answer 1 2"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
-    print(commandOut)
-    commandGet = "!stoppoll 1"
+    commandGet = "!remember Artemis is a fine young lady with a nice ass. She also exponentially increases the chances of bad luck in her proximity."
     commandSender = "Ne Zha"
     commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandGet)
     print(commandOut)
-    commandGet = "!currentpolls"
+    commandGet = "!whois Artemis"
     commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandGet)
+    print(commandOut)
+    commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
+    commandSender = "Ne Zha"
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandGet)
+    print(commandOut)
+    commandGet = "!whois Ne Zha"
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandGet)
     print(commandOut)
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
 testFunctionality()
