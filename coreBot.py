@@ -8,10 +8,10 @@ class TwitterBot(object):
     whois = {}
     rules = ""
     fakerules = ""
-    whoisSaveFile = "whois.p"
-    quotesSaveFile = "quotes.p"
-    rulesSaveFile = "rules.txt"
-    fakeRulesSaveFile = "fakerules.txt"
+    whoisSaveFile = "/config/whois.p"
+    quotesSaveFile = "/config/quotes.p"
+    rulesSaveFile = "/config/rules.txt"
+    fakeRulesSaveFile = "/config/fakerules.txt"
     currExp = {}
     iAm = "I am Brightbot. I am a chatroom robot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
     commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget"]
