@@ -5,11 +5,16 @@ import random
 class TwitterBot(object):
     quotes =  {}
     polls = {}
-    whois = []
+    whois = {}
+    rules = ""
+    fakerules = ""
     whoisSaveFile = "whois.p"
     quotesSaveFile = "quotes.p"
+    rulesSaveFile = "rules.txt"
+    fakeRulesSaveFile = "fakerules.txt"
     currExp = {}
-    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls"]
+    iAm = "I am Brightbot. I am a chatroom robot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
+    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget"]
     def emptyDictionary(self, dictionary, key):
         dictionary.pop(key, None)
     def toDo(self, command, sender):
@@ -58,12 +63,23 @@ class TwitterBot(object):
         elif doThis == BrightBot.commands[6]: #Moods
             return self.mood(data)
         elif doThis == BrightBot.commands[7]: #WhoAmI
-            return self.identify()
+            return self.iAm
         elif doThis == BrightBot.commands[8]: #Current Polls
             return "Current Polls:" + polls
+        elif doThis == BrightBot.commands[9]: #Rules
+            return BrightBot.rules()
+        elif doThis == BrightBot.commands[10]: #Fake Rules
+            return BrightBot.fakeRules()
+        elif doThis == BrightBot.commands[11]: #Whois
+            return self.whoIs()
+        elif doThis == BrightBot.commands[12]: #Remember
+            remWho, remWhat = data.split(" ", 1)
+            return self.remember(remWho, remWhat)
+        elif doThis == BrightBot.commands[13]: #Forget
+            return self.forget(data)
         else:
             return "Unknown command."
-    def loadQuotes(self):
+    def loadFiles(self):
         print("Attempting to load quotes from " + self.quotesSaveFile)
         try:
             f = open(self.quotesSaveFile, "rb")
@@ -90,6 +106,30 @@ class TwitterBot(object):
         except EOFError:
             print("The whois file is empty, no info loaded :(")
         print("loadwhois module finished.")
+        print("Attempting to load rules from " + self.rulesSaveFile)
+        try:
+            with open(self.rulesSaveFile, "r") as myFile:
+                self.rules = myFile.read()
+        except FileNotFoundError:
+                print("Could not find rules file! Making one instead...")
+                f = open(self.rulesSaveFule, "w")
+                print("New rules save file created.")
+                f.close()
+        except EOFError:
+            print("The rules file is empty, no rules loaded :(")
+        print("loadRules module finished.")
+        print("Attempting to load rules from " + self.fakeRulesSaveFile)
+        try:
+            with open(self.fakeRulesSaveFile, "r") as myFile:
+                self.fakeRules = myFile.read()
+        except FileNotFoundError:
+                print("Could not find fake rules file! Making one instead...")
+                f = open(self.fakeRulesSaveFule, "w")
+                print("New rules save file created.")
+                f.close()
+        except EOFError:
+            print("The fake rules file is empty, no fake rules loaded :(")
+        print("loadFakeRules module finished.")
     def saveQuotes(self):
         print("Attempting to save quotes to " + self.quotesSaveFile)
         f = open(self.quotesSaveFile, "wb")
@@ -218,6 +258,9 @@ class TwitterBot(object):
             print(pAsker + " has created a new poll (ID " + pID + "): " + pQues + "?")
 
         print("Type !answer, followed by your answer or answer ID to reply!")
+    def mood(self, moodType):
+        print("Chatroom name is now " + moodType)
+        return "The room has been renamed successfully."
     def stopPolling(self, pollID, sender):
         for i in self.polls:
             if i[0] == pollID:
@@ -234,14 +277,41 @@ class TwitterBot(object):
                     return "Final results: " + str(self.currExp)
                 else:
                     return "You did not create that poll!"
-                
+    def saveWhois(self):
+        print("Attempting to save whois to " + self.whoisSaveFile)
+        f = open(self.whoisSaveFile, "wb")
+        pickle.dump(self.whois, f)
+        f.close()
+        print("Saved Successfuly.")
+    def forget(self, who):
+        try:
+            del self.whois(who)
+            return who + " has been forgotten."
+        except KeyError:
+            try: 
+                dummyKey, dummySplit = who.split(" ", 1)
+                del self.whois(dummyKey)
+                return who + " has been forgotten."
+            except KeyError:
+                return "I don't know who " + who + " is!"
+    def remember(self, who, what):
+        self.whois[who] = what
+        return "I'll remember that"
+    def whoIs(self, who):
+        try:
+            return who + self.whois[who]
+        except KeyError:
+            try:
+                dummyKey, dummySplit = who.split(" ", 1)
+                return dummyKey + self.whois[dummyKey]
+            except KeyError:
+                return "I don't know either."
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
         print("Last updated 9/21/2015")
-        self.loadQuotes()
+        self.loadFiles()
 BrightBot = TwitterBot()
-BrightBot.loadQuotes()
 def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced with 
     commandGet = "!outcome 7 5 This is just a test."
     commandSender = "Ne Zha"
@@ -266,6 +336,8 @@ def testFunctionality(): #Once the Twitter library is added, this will be where 
     commandSender = "Ne Zha"
     commandOut = BrightBot.toDo(commandGet, commandSender)
     print(commandOut)
-    print(BrightBot.polls)
+    commandGet = "!currentpolls"
+    commandOut = BrightBot.toDo(commandGet, commandSender)
+    print(commandOut)
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
 testFunctionality()
