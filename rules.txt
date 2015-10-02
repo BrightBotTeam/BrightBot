@@ -1,1 +1,2 @@
-Insert custom rules for your Bot to call by using !rules in the rules.txt folder!
+Insert custom rules for your chat by editing rules.txt in the config folder!
+Do note that you must restart the bot before these changes will take effect.
