@@ -8,8 +8,8 @@ class TwitterBot(object):
     whois = {}
     rules = ""
     fakerules = ""
-    whoisSaveFile = "/config/whois.p"
-    quotesSaveFile = "/config/quotes.p"
+    whoisSaveFile = "/data/whois.p"
+    quotesSaveFile = "/data/quotes.p"
     rulesSaveFile = "/config/rules.txt"
     fakeRulesSaveFile = "/config/fakerules.txt"
     currExp = {}
