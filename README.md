@@ -95,3 +95,5 @@ Bugtesting
 # Version history:
 
 0.1: The initial robot. Simple and stupid.
+
+0.2: The first working version. Takes a preordered list of commands and runs them one at a time. 
