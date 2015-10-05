@@ -5,7 +5,7 @@ import random
 class TwitterBot(object):
     quotes =  {}
     polls = {}
-    whois = {}
+    whois = {"Brightbot" : " is our lord and savior, the Brightest star of the heavens and the earth. Those who worship him shall find peace, and those who reject him, destruction."}
     rules = ""
     fakerules = ""
     whoisSaveFile = "whois.p"
@@ -13,7 +13,7 @@ class TwitterBot(object):
     rulesSaveFile = "rules.txt"
     fakeRulesSaveFile = "fakerules.txt"
     currExp = {}
-    iAm = "I am Brightbot. I am a chatroom robot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
+    iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
     commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget"]
     def emptyDictionary(self, dictionary, key):
         dictionary.pop(key, None)
@@ -309,10 +309,10 @@ class TwitterBot(object):
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
-        print("Last updated 9/21/2015")
+        print("Last updated 10/5/2015")
         self.loadFiles()
 BrightBot = TwitterBot()
-def testFunctionality(): #Once the Twitter library is added, this will be where things actually happen. Most print statements will be replaced withcommandGet = "!currentpolls"
+def testFunctionality(): #Once a library is added, this command should be run to test proper integration. Edit commands as nessesary to guarentee that it runs properly.
     commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
     commandSender = "Ne Zha"
     commandOut = BrightBot.toDo(commandGet, commandSender)
