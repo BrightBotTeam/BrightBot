@@ -82,15 +82,15 @@ Similar to the quotes command, but essentially provides a "universal quote" for 
 
 Usage: !OMightyConch (question)
 
-A magic 8 ball,, but slightly different in its command.
+A magic 8 ball.
 
-## !Help
+## Help
 
 Usage: !help
 
 Shows all possible commands that can be run by BrightBot.
 
-##!Reboot
+## Reboot
 
 Usage: !reboot
 
