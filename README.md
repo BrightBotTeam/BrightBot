@@ -78,6 +78,24 @@ Usage:
 
 Similar to the quotes command, but essentially provides a "universal quote" for each individual. Once again, this is stored by default in "whois.p", but can be changed by modifying the code. 
 
+## OMightyConch
+
+Usage: !OMightyConch (question)
+
+A magic 8 ball,, but slightly different in its command.
+
+## !Help
+
+Usage: !help
+
+Shows all possible commands that can be run by BrightBot.
+
+##!Reboot
+
+Usage: !reboot
+
+Restarts the bot. Can only be run by the specified admin account.
+
 # What is  planned for this bot:
 
 Actively listen for commands from a commandline, and, with integration, from a message source
