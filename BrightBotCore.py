@@ -2,7 +2,24 @@ import pickle
 import sys
 import datetime
 import random
+from twitter import *
+def importString(textFile):
+    f = open(textFile, "r")
+    returnme = f.read()
+    f.close()
+    return returnme
+auth = OAuth(
+    consumer_key=importString("consumerkey.txt"),
+    consumer_secret=importString("consumersecret.txt"),
+    token=importString("consumertoken.txt"),
+    token_secret=importString("tokensecret.txt"),
+)
+token = importString("consumertoken.txt")
+token_key = importString("tokensecret.txt")
+con_secret = importString("consumersecret.txt")
+con_secret_key = importString("consumerkey.txt")
 class TwitterBot(object):
+    
     quotes =  {}
     polls = {}
     whois = {"Brightbot" : " is our lord and savior, the Brightest star of the heavens and the earth. Those who worship him shall find peace, and those who reject him, destruction."}
@@ -325,10 +342,13 @@ class TwitterBot(object):
         try:
             return who + self.whois[who]
         except KeyError:
+            print(who)
             try:
                 dummyKey, dummySplit = who.split(" ", 1)
                 return dummyKey + self.whois[dummyKey]
             except KeyError:
+                return "I don't know either."
+            except ValueError:
                 return "I don't know either."
     def eightBall(self, question):
         result = random.randint(1, len(eightBallResponses))
@@ -340,7 +360,7 @@ class TwitterBot(object):
         print("Last updated 10/5/2015")
         self.loadFiles()
 BrightBot = TwitterBot()
-def testFunctionality(): #Once a library is added, this command should be run to test proper integration. Edit commands as nessesary to guarentee that it runs properly.
+def testFunctionality(): #Solely for testing sake. You can probably ignore this.
     commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
     commandSender = "Ne Zha"
     commandOut = BrightBot.toDo(commandGet, commandSender)
@@ -369,4 +389,13 @@ def testFunctionality(): #Once a library is added, this command should be run to
     print(commandGet)
     print(commandOut)
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
-testFunctionality()
+t = Twitter(
+    auth=auth)
+print("Finished.")
+twitter_userstream = TwitterStream(auth=auth, domain='userstream.twitter.com')
+for msg in twitter_userstream.user():
+    if 'direct_message' in msg:
+        print(msg['direct_message']["text"])
+        print(msg['direct_message']['sender']['name'])
+        sendText = BrightBot.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name'])
+        t.direct_messages.new(user = msg['direct_message']['recipient']['name'], text = sendText)
