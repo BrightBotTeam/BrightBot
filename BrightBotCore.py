@@ -12,9 +12,13 @@ class TwitterBot(object):
     quotesSaveFile = "quotes.p"
     rulesSaveFile = "rules.txt"
     fakeRulesSaveFile = "fakerules.txt"
+    eightBallSaveFile = "8ballquotes.txt"
+    roomName = "Twitter Of The Gods"
+    eightBallResponses = []
+    admin = "Ne Zha"
     currExp = {}
     iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
-    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget"]
+    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget", "!reset", "!help", "!omagicconch"]
     def emptyDictionary(self, dictionary, key):
         dictionary.pop(key, None)
     def toDo(self, command, sender):
@@ -77,8 +81,14 @@ class TwitterBot(object):
             return "@" + sender + ": " + self.remember(remWho, remWhat)
         elif doThis == BrightBot.commands[13]: #Forget
             return "@" + sender + ": " + self.forget(data)
+        elif doThis == BrightBot.commands[14]: #Reset
+            return "@" + sender + ": " + self.mood(roomName)
+        elif doThis == BrightBot.commands[15]: #Help
+            return "@" + sender + ": Available commands: " + self.commands
+        elif doThis == BrightBot.commands[16]: #OMagicConch
+            return "@" + sender + ": " + self.eightBall(data)
         else:
-            return "@" + sender + ": Unknown command."
+            return "@" + sender + ": Unknown command. Type !help for a list of commands."
     def loadFiles(self):
         print("Attempting to load quotes from " + self.quotesSaveFile)
         try:
@@ -118,7 +128,7 @@ class TwitterBot(object):
         except EOFError:
             print("The rules file is empty, no rules loaded :(")
         print("loadRules module finished.")
-        print("Attempting to load rules from " + self.fakeRulesSaveFile)
+        print("Attempting to load fake rules from " + self.fakeRulesSaveFile)
         try:
             with open(self.fakeRulesSaveFile, "r") as myFile:
                 self.fakeRules = myFile.read()
@@ -130,6 +140,20 @@ class TwitterBot(object):
         except EOFError:
             print("The fake rules file is empty, no fake rules loaded :(")
         print("loadFakeRules module finished.")
+        print("Attempting to load 8ball quotes from " + self.eightBallSaveFile)
+        try:
+            with open(self.eightBallSaveFile, "r") as myFile:
+                for i in myFile.readline():
+                    eightBallResponses.append(i);
+                self.eightBallResponses = myFile.read()
+        except FileNotFoundError:
+                print("Could not find 8ball quotes file! Making one instead...")
+                f = open(self.eightBallSaveFile, "w")
+                print("New rules save file created.")
+                f.close()
+        except EOFError:
+            print("The 8ball file is empty, no fake rules loaded :(")
+        print("load8ball module finished.")
     def saveQuotes(self):
         print("Attempting to save quotes to " + self.quotesSaveFile)
         f = open(self.quotesSaveFile, "wb")
@@ -306,6 +330,10 @@ class TwitterBot(object):
                 return dummyKey + self.whois[dummyKey]
             except KeyError:
                 return "I don't know either."
+    def eightBall(self, question):
+        result = random.randint(1, len(eightBallResponses))
+        return eightBallResponses[result]
+        
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
