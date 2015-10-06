@@ -161,7 +161,7 @@ class TwitterBot(object):
         try:
             with open(self.eightBallSaveFile, "r") as myFile:
                 for i in myFile.readline():
-                    eightBallResponses.append(i);
+                    self.eightBallResponses.append(i);
                 self.eightBallResponses = myFile.read()
         except FileNotFoundError:
                 print("Could not find 8ball quotes file! Making one instead...")
