@@ -98,11 +98,7 @@ Restarts the bot. Can only be run by the specified admin account.
 
 # What is  planned for this bot:
 
-Actively listen for commands from a commandline, and, with integration, from a message source
-
 Make the robot multi-file, divide up into commands list, config, command functions, etc
-
-Reboot command
 
 Add a configuration file to change the the name of the files loaded by the robot.
 
@@ -115,3 +111,5 @@ Bugtesting
 0.1: The initial robot. Simple and stupid.
 
 0.2: The first working version. Takes a preordered list of commands and runs them one at a time. 
+
+1.0: The first version that can be run as an actual bot from Twitter (NOTE: Not current release version, coming soon)
