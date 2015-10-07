@@ -18,7 +18,7 @@ token = importString("consumertoken.txt")
 token_key = importString("tokensecret.txt")
 con_secret = importString("consumersecret.txt")
 con_secret_key = importString("consumerkey.txt")
-class TwitterBot(object):
+class BrightBot(object):
     
     quotes =  {}
     polls = {}
@@ -209,11 +209,8 @@ class TwitterBot(object):
         except IndexError:
             return False
     def lenny(self):
-        return "!Lenny is still being tested! Cannot do this."
+        return "!Lenny is currently not available. Please try again later."
         #todaysDate = date.today() #Figure out why this line is breaking.
-        #lennyRepo = {1 : "( ͡° ͜ʖ ͡,°)", 2 : "( ͠° ͟ʖ ͡°)", 3 : "ᕦ( ͡° ͜ʖ ͡°)ᕤ", 4 : "( ͡~ ͜ʖ ͡°)"}
-        #print(lennyRepo[todaysDate.day])
-        #return lennyRepo[todaysDate.day]
     def outcome(self, dice, sides, eventString):
         pseudorandom = 0
         total = 0
@@ -299,8 +296,9 @@ class TwitterBot(object):
 
         print("Type !answer, followed by your answer or answer ID to reply!")
     def mood(self, moodType):
-        print("Chatroom name is now " + moodType)
-        return "The room has been renamed successfully."
+        return "Mood functionality is currently not available, due to Twitter API constraints."
+        #print("Chatroom name is now " + moodType)
+        #return "The room has been renamed successfully."
     def stopPolling(self, pollID, sender):
         for i in self.polls:
             if i[0] == pollID:
@@ -353,39 +351,38 @@ class TwitterBot(object):
     def eightBall(self, question):
         result = random.randint(1, len(eightBallResponses))
         return eightBallResponses[result]
-        
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
         print("Last updated 10/5/2015")
         self.loadFiles()
-BrightBot = TwitterBot()
+Maelyn = BrightBot()
 def testFunctionality(): #Solely for testing sake. You can probably ignore this.
     commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
     commandSender = "Ne Zha"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
+    commandOut = Maelyn.toDo(commandGet, commandSender)
     print(commandGet)
     print(commandOut)
     commandGet = "!whois Ne Zha"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
+    commandOut = Maelyn.toDo(commandGet, commandSender)
     print(commandGet)
     print(commandOut)
     commandGet = "!remember Artemis is a fine young lady with a nice ass. She also exponentially increases the chances of bad luck in her proximity."
     commandSender = "Ne Zha"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
+    commandOut = Maelyn.toDo(commandGet, commandSender)
     print(commandGet)
     print(commandOut)
     commandGet = "!whois Artemis"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
+    commandOut = Maelyn.toDo(commandGet, commandSender)
     print(commandGet)
     print(commandOut)
     commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
     commandSender = "Ne Zha"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
+    commandOut = Maelyn.toDo(commandGet, commandSender)
     print(commandGet)
     print(commandOut)
     commandGet = "!whois Ne Zha"
-    commandOut = BrightBot.toDo(commandGet, commandSender)
+    commandOut = Maelyn.toDo(commandGet, commandSender)
     print(commandGet)
     print(commandOut)
 #Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
@@ -397,5 +394,4 @@ for msg in twitter_userstream.user():
     if 'direct_message' in msg:
         print(msg['direct_message']["text"])
         print(msg['direct_message']['sender']['name'])
-        sendText = BrightBot.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name'])
-        t.direct_messages.new(screen_name = msg['direct_message']['recipient']['name'], text = sendText)
+        t.direct_messages.new(screen_name = msg['direct_message']['recipient']['name'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name'])
