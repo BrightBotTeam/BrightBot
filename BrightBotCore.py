@@ -32,8 +32,8 @@ class BrightBot(object):
     roomName = "Twitter Of The Gods"
     eightBallResponses = []
     currExp = {}
-    iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
-    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget", "!reset", "!help", "!omagicconch"]
+    iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 1.0 'It's Alive!!!' "
+    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!rem", "!forget", "!reset", "!help", "!omagicconch"]
     def emptyDictionary(self, dictionary, key):
         dictionary.pop(key, None)
     def toDo(self, command, sender):
@@ -42,6 +42,7 @@ class BrightBot(object):
             doThis = doThis.lower()
         except ValueError:
             doThis = command
+            data = False
             doThis = doThis.lower()
         if doThis == BrightBot.commands[0]: #Best Of
             action, stuff = data.split(" ", 1)
@@ -58,27 +59,40 @@ class BrightBot(object):
         elif doThis == BrightBot.commands[1]: #Lenny
             return self.lenny()
         elif doThis == BrightBot.commands[2]: #Outcome
-            x, y, event = data.split(" ", 2)
-            return self.outcome(x, y, event)
+            try:
+                x, y, event = data.split(" ", 2)
+                return self.outcome(x, y, event)
+            except UnboundLocalError:
+                return "Incorrect format! Usage: !outcome (number of dice), (number of sides on the dice), (Event String)"
         elif doThis == BrightBot.commands[3]: #Poll
-            if data[0].lower() == "h":
-                try:
-                    question, answers = data.split("? ", 1)
-                    return "@" + sender + ": " + self.hardPoll(question, answers, sender)
-                except ValueError:
-                    return "@" + sender + ": Could not create poll! make sure you have at least one question mark at the end of your question!"
-            elif data[0].lower == "s":
-                placeHolder, actual = data.split("? ", 1)
-                return "@" + sender + ": " + self.softPoll(actual, sender)
-            else:
-                return False
+            try:
+                if data[0].lower() == "h":
+                    try:
+                        question, answers = data.split("? ", 1)
+                        return self.hardPoll(question, answers, sender)
+                    except ValueError:
+                        return "Could not create poll! make sure you have at least one question mark at the end of your question!"
+                elif data[0].lower == "s":
+                    placeHolder, actual = data.split("? ", 1)
+                    return self.softPoll(actual, sender)
+            except UnboundLocalError | TypeError:
+                'Incorrect format! Usage: !poll (hard/soft), (Question)?[If hard then add: , (answer 1). (answer 2). (etc)]'
         elif doThis == BrightBot.commands[4]: #Answer
-            pollID, pollAns = data.split(" ", 1)
-            return self.answer(pollID, pollAns)
+            try:
+                pollID, pollAns = data.split(" ", 1)
+                return self.answer(pollID, pollAns)
+            except UnboundLocalError:
+                return "Incorrect format! Usage: !answer (pollID) (answer/answer identifier)"
         elif doThis == BrightBot.commands[5]: #Stop Poll
-            return self.stopPolling(data, sender)
+            try:
+                return self.stopPolling(data, sender)
+            except UnboundLocalError:
+                return "Incorrect format! Usage: !stoppoll (pollID)"
         elif doThis == BrightBot.commands[6]: #Moods
-            return self.mood(data)
+            try:
+                return self.mood(data)
+            except UnboundLocalError:
+                return "Incorrect Format! Usage: !mood (mood)"
         elif doThis == BrightBot.commands[7]: #WhoAmI
             return self.iAm
         elif doThis == BrightBot.commands[8]: #Current Polls
@@ -88,18 +102,30 @@ class BrightBot(object):
         elif doThis == BrightBot.commands[10]: #Fake Rules
             return BrightBot.fakeRules
         elif doThis == BrightBot.commands[11]: #Whois
-            return self.whoIs(data)
+            try:
+                return self.whoIs(data)
+            except UnboundLocalError:
+                return "Incorrect format! Usage: !whois (name)"
         elif doThis == BrightBot.commands[12]: #Remember
-            remWho, remWhat = data.split(" ", 1)
-            return  self.remember(remWho, remWhat)
+            try:
+                remWho, remWhat = data.split(" ", 1)
+                return  self.remember(remWho, remWhat)
+            except UnboundLocalError:
+                return "Incorrect Format! Usage: !rem (name) (what)"
         elif doThis == BrightBot.commands[13]: #Forget
-            return self.forget(data)
+            try:
+                return self.forget(data)
+            except UnboundLocalError:
+                return "Incorrect format! Usage: !forget (who)"
         elif doThis == BrightBot.commands[14]: #Reset
             return self.mood(roomName)
         elif doThis == BrightBot.commands[15]: #Help
             return "Available commands: " + str(self.commands)
         elif doThis == BrightBot.commands[16]: #OMagicConch
-            return self.eightBall(data)
+            try:
+                return self.eightBall(data)
+            except UnboundLocalError:
+                return "Incorrect Format! Usage: !OMightConch (question)"
         else:
             return "Unknown command. Type !help for a list of commands."
     def loadFiles(self):
@@ -134,10 +160,7 @@ class BrightBot(object):
             with open(self.rulesSaveFile, "r") as myFile:
                 self.rules = myFile.read()
         except FileNotFoundError:
-                print("Could not find rules file! Making one instead...")
-                f = open(self.rulesSaveFile, "w")
-                print("New rules save file created.")
-                f.close()
+                print("Could not find rules file! Calling !rules will crash the program now.")
         except EOFError:
             print("The rules file is empty, no rules loaded :(")
         print("loadRules module finished.")
@@ -146,10 +169,7 @@ class BrightBot(object):
             with open(self.fakeRulesSaveFile, "r") as myFile:
                 self.fakeRules = myFile.read()
         except FileNotFoundError:
-                print("Could not find fake rules file! Making one instead...")
-                f = open(self.fakeRulesSaveFile, "w")
-                print("New rules save file created.")
-                f.close()
+                print("Could not find fake rules file! Calling !rules will crash the program now.")
         except EOFError:
             print("The fake rules file is empty, no fake rules loaded :(")
         print("loadFakeRules module finished.")
@@ -363,9 +383,9 @@ class BrightBot(object):
                 dummyKey, dummySplit = who.split(" ", 1)
                 return dummyKey + self.whois[dummyKey]
             except KeyError:
-                return "I don't know either."
+                return "I don't know either. (Make sure they are submitted via !rem first!)"
             except ValueError:
-                return "I don't know either."
+                return "I don't know either. (Make sure they are submitted via !rem first!)"
     def eightBall(self, question):
         result = random.randint(1, len(eightBallResponses))
         return eightBallResponses[result]
