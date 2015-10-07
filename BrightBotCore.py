@@ -31,7 +31,6 @@ class BrightBot(object):
     eightBallSaveFile = "8ballquotes.txt"
     roomName = "Twitter Of The Gods"
     eightBallResponses = []
-    admin = "Ne Zha"
     currExp = {}
     iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 0.1 'It's Broken.' "
     commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!remember", "!forget", "!reset", "!help", "!omagicconch"]
@@ -45,24 +44,22 @@ class BrightBot(object):
             doThis = command
             doThis = doThis.lower()
         if doThis == BrightBot.commands[0]: #Best Of
-            action, person, response = data.split(" ", 2)
+            action, stuff = data.split(" ", 1)
             action = action.lower()
-            person = person.lower()
-            response = response.lower()
             if action == "get":
                 response = int(response)
-                return "@" + sender + ": " + self.getQuote(person, response, sender)
+                return self.getQuote(person, stuff, sender)
             elif action == "add":
-                return "@" + sender + ": " + self.addQuote(person, response)
+                return self.addQuote(person, stuff)
             elif action == "delete":
-                return "@" + sender + ": " + self.delQuote(person, response)
+                return self.delQuote(person, stuff)
             else:
-                return "@" + sender + ": Unrecognized action, please check spelling."
+                return "Unrecognized action! Usage: !bestof (get/add/delete) (person) (command). Do note if you are adding a quote, you need to add apostrophies ('') around the actual quote!"
         elif doThis == BrightBot.commands[1]: #Lenny
-            return "@" + sender + ": " + self.lenny()
+            return self.lenny()
         elif doThis == BrightBot.commands[2]: #Outcome
             x, y, event = data.split(" ", 2)
-            return "@" + sender + ": " + self.outcome(x, y, event)
+            return self.outcome(x, y, event)
         elif doThis == BrightBot.commands[3]: #Poll
             if data[0].lower() == "h":
                 try:
@@ -77,34 +74,34 @@ class BrightBot(object):
                 return False
         elif doThis == BrightBot.commands[4]: #Answer
             pollID, pollAns = data.split(" ", 1)
-            return "@" + sender + ": " + self.answer(pollID, pollAns)
+            return self.answer(pollID, pollAns)
         elif doThis == BrightBot.commands[5]: #Stop Poll
-            return "@" + sender + ": " + self.stopPolling(data, sender)
+            return self.stopPolling(data, sender)
         elif doThis == BrightBot.commands[6]: #Moods
-            return "@" + sender + ": " + self.mood(data)
+            return self.mood(data)
         elif doThis == BrightBot.commands[7]: #WhoAmI
-            return "@" + sender + ": " + self.iAm
+            return self.iAm
         elif doThis == BrightBot.commands[8]: #Current Polls
-            return "@" + sender + ": Current Polls:" + str(self.polls)
+            return "Current polls: " + str(self.polls)
         elif doThis == BrightBot.commands[9]: #Rules
-            return "@" + sender + ": " + BrightBot.rules()
+            return BrightBot.rules
         elif doThis == BrightBot.commands[10]: #Fake Rules
-            return "@" + sender + ": " + BrightBot.fakeRules()
+            return BrightBot.fakeRules
         elif doThis == BrightBot.commands[11]: #Whois
-            return "@" + sender + ": " + self.whoIs(data)
+            return self.whoIs(data)
         elif doThis == BrightBot.commands[12]: #Remember
             remWho, remWhat = data.split(" ", 1)
-            return "@" + sender + ": " + self.remember(remWho, remWhat)
+            return  self.remember(remWho, remWhat)
         elif doThis == BrightBot.commands[13]: #Forget
-            return "@" + sender + ": " + self.forget(data)
+            return self.forget(data)
         elif doThis == BrightBot.commands[14]: #Reset
-            return "@" + sender + ": " + self.mood(roomName)
+            return self.mood(roomName)
         elif doThis == BrightBot.commands[15]: #Help
-            return "@" + sender + ": Available commands: " + self.commands
+            return "Available commands: " + str(self.commands)
         elif doThis == BrightBot.commands[16]: #OMagicConch
-            return "@" + sender + ": " + self.eightBall(data)
+            return self.eightBall(data)
         else:
-            return "@" + sender + ": Unknown command. Type !help for a list of commands."
+            return "Unknown command. Type !help for a list of commands."
     def loadFiles(self):
         print("Attempting to load quotes from " + self.quotesSaveFile)
         try:
@@ -176,39 +173,61 @@ class BrightBot(object):
         pickle.dump(self.quotes, f)
         f.close()
         print("Saved Successfuly.")
-    def getQuote(self, person, number, sentRequest):
-        print(sentRequest + " has requested quote number " + str(number) + " of " + person + ".")
-        currentQuote = ""
+    def getQuote(self, data, sentRequest):
+        person, number = data.split(" ", 1)
         try:
+            print(sentRequest + " has requested quote number " + str(number) + " of " + person + ".")
             currentQuote = self.quotes[person][number - 1]
             print(currentQuote)
-            return currentQuote
+            return "Quote " + str(number) + " of " + len(self.quotes[person]) + ": " + currentQuote
         except KeyError:
-            print("Could not find person " + person + "! Returning False...")
-            return False
+            return "I don't know who " + person + " is!"
         except IndexError:
-            print("Could not find quote number " + number + " for " + person + "! Returning False...")
-            return False
-    def addQuote(self, person, quote):
+            return "Could not find quote number " + number + " for " + person + "!"
+        except ValueError:
+            person, person2, number = data.split(" ", 2)
+            try:
+                print(sentRequest + " has requested quote number " + str(number) + " of " + person + " " + person2 + ".")
+                currentQuote = self.quotes[person + " " + person2][number - 1]
+                return "Quote " + str(number) + " of " + len(self.quotes[person + " " + person2]) + ": " + currentQuote
+            except KeyError:
+                    return "I don't know who " + person + " " + person2 + " is!"
+            except IndexError:
+                    return "Could not find quote number " + number + " for " + person + "!"
+            except ValueError:
+                person, person2, person3, number = data.split(" ", 3)
+                try:
+                    str(number)
+                    print(sentRequest + " has requested quote number " + str(number) + " of " + person + ".")
+                    currentQuote = self.quotes[person + " " + person2 + " " + person3][number - 1]
+                    return "Quote " + str(number) + " of " + len(self.quotes[person + " " + person2 + " " + person3]) + ": " + currentQuote
+                except KeyError:
+                    return "I don't know who " + person + " " + person2 + " " + person3 + " is!"
+                except IndexError:
+                    return "Could not find quote number " + number + " for " + person + " " + person2 + " " + person3 + "!"
+                except ValueError:
+                    return "That name is too long!"
+    def addQuote(self, data):
+        person, quote, part2 = data.split("'", 2)
         try:
             self.quotes[person].append(quote)
             self.saveQuotes()
-            return True
+            return "Quote saved successfully."
         except KeyError:
             self.quotes[person] = [quote]
             self.saveQuotes()
-            return True
+            return "Quote saved successfully."
     def delQuote(self, person, quote):
         try:
             del self.quotes[person][quote]
             self.saveQuotes()
-            return True
+            return "Quote forgotten."
         except KeyError:
-            return False
+            return "Could not find the person!"
         except IndexError:
-            return False
+            return "Could not find that quote!"
     def lenny(self):
-        return "!Lenny is currently not available. Please try again later."
+        return "!Lenny is still in development! Try again later."
         #todaysDate = date.today() #Figure out why this line is breaking.
     def outcome(self, dice, sides, eventString):
         pseudorandom = 0
@@ -351,19 +370,19 @@ class BrightBot(object):
         result = random.randint(1, len(eightBallResponses))
         return eightBallResponses[result]
     def __init__(self): 
-        print("BrightBot V:0.2")
+        print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
-        print("Last updated 10/7/2015")
+        print("Last updated 10/5/2015")
         self.loadFiles()
 Maelyn = BrightBot()
 def testFunctionality(): #Solely for testing sake. You can probably ignore this.
     pass
 t = Twitter(
-    auth=auth, retry = True)
+    auth=auth)
 print("Finished starting bot.")
 twitter_userstream = TwitterStream(auth=auth, domain='userstream.twitter.com')
 for msg in twitter_userstream.user():
     if 'direct_message' in msg:
-        print(msg['direct_message']["text"])
-        print(msg['direct_message']['sender']['name'])
-        t.direct_messages.new(screen_name = msg['direct_message']['recipient']['name'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name']))
+        if(msg['direct_message']['sender']['screen_name'] != "BrightOfTheSCP"):
+            print("Message recieved from " + msg['direct_message']['sender']['screen_name'])
+            t.direct_messages.new(screen_name = msg['direct_message']['sender']['screen_name'], user_id = msg['direct_message']['sender']['id'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name']))
