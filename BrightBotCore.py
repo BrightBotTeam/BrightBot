@@ -1,5 +1,4 @@
 import pickle
-import sys
 import datetime
 import random
 from twitter import *
@@ -352,46 +351,19 @@ class BrightBot(object):
         result = random.randint(1, len(eightBallResponses))
         return eightBallResponses[result]
     def __init__(self): 
-        print("BrightBot V:0.1")
+        print("BrightBot V:0.2")
         print("Created by Matthew Weidenhamer")
-        print("Last updated 10/5/2015")
+        print("Last updated 10/7/2015")
         self.loadFiles()
 Maelyn = BrightBot()
 def testFunctionality(): #Solely for testing sake. You can probably ignore this.
-    commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
-    commandSender = "Ne Zha"
-    commandOut = Maelyn.toDo(commandGet, commandSender)
-    print(commandGet)
-    print(commandOut)
-    commandGet = "!whois Ne Zha"
-    commandOut = Maelyn.toDo(commandGet, commandSender)
-    print(commandGet)
-    print(commandOut)
-    commandGet = "!remember Artemis is a fine young lady with a nice ass. She also exponentially increases the chances of bad luck in her proximity."
-    commandSender = "Ne Zha"
-    commandOut = Maelyn.toDo(commandGet, commandSender)
-    print(commandGet)
-    print(commandOut)
-    commandGet = "!whois Artemis"
-    commandOut = Maelyn.toDo(commandGet, commandSender)
-    print(commandGet)
-    print(commandOut)
-    commandGet = "!remember Ne Zha sexually identifies as an attack helicopter."
-    commandSender = "Ne Zha"
-    commandOut = Maelyn.toDo(commandGet, commandSender)
-    print(commandGet)
-    print(commandOut)
-    commandGet = "!whois Ne Zha"
-    commandOut = Maelyn.toDo(commandGet, commandSender)
-    print(commandGet)
-    print(commandOut)
-#Note to self: Possibly add a number value to the Dictionary Key to indicate the order in  which it was added?
+    pass
 t = Twitter(
-    auth=auth)
-print("Finished.")
+    auth=auth, retry = True)
+print("Finished starting bot.")
 twitter_userstream = TwitterStream(auth=auth, domain='userstream.twitter.com')
 for msg in twitter_userstream.user():
     if 'direct_message' in msg:
         print(msg['direct_message']["text"])
         print(msg['direct_message']['sender']['name'])
-        t.direct_messages.new(screen_name = msg['direct_message']['recipient']['name'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name'])
+        t.direct_messages.new(screen_name = msg['direct_message']['recipient']['name'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name']))
