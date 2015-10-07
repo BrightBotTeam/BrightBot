@@ -398,4 +398,4 @@ for msg in twitter_userstream.user():
         print(msg['direct_message']["text"])
         print(msg['direct_message']['sender']['name'])
         sendText = BrightBot.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name'])
-        t.direct_messages.new(user = msg['direct_message']['recipient']['name'], text = sendText)
+        t.direct_messages.new(screen_name = msg['direct_message']['recipient']['name'], text = sendText)
