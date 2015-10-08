@@ -114,4 +114,6 @@ Bugtesting
 
 0.2: The first working version. Takes a preordered list of commands and runs them one at a time. 
 
-1.0: The first version that can be run as an actual bot from Twitter (NOTE: Not current release version, coming soon)
+1.0: The first version that can be run as an actual bot from Twitter. It's probably terribly broken
+
+1.1: Fixed crashing if you passed the wrong length command for a command. Will now return the proper command after crashing
