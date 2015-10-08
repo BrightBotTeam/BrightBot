@@ -1,6 +1,8 @@
 # BrightBot
 An IRCBot infrastructure, the current project is meant to recreate an IRCBot in a Twitter Chat Room. **UNDER DEVELOPMENT**
 
+NOTE: All files here must be placed in the same folder. Additionally, the Python Twitter Tools API folder is required, found here: https://github.com/sixohsix/twitter/tree/master/twitter
+
 # Features:
 ##BestOf
 Usage: !bestof (get/add/delete) [(person/random if get) (person if add/delete)] [(number if get/delete) ("Quote" if add)]
@@ -23,7 +25,7 @@ Return a different "lenny" based on the current day of the month. It's that simp
 ## Outcome
 Usage: !outcome x, y, ("Event String" or flag)
 
-Essentially a glorified dice roll command, rolls x number of y sided dice, and prints out '"Event String" + total + highest possible total. TL:DR; generates x numbers between 0 and y, adds them together, and appends them to  "Event String"
+Essentially a glorified dice roll command, rolls y number of x sided dice, and prints out '"Event String" + total + highest possible total. TL:DR; generates y numbers between 0 and x, adds them together, and appends them to  "Event String"
 
 Replacing "Event String" with the -r flag will instead **return** only total.
 Replacing "Event String" with the -p flag will instead **print** only total.
