@@ -59,11 +59,11 @@ class BrightBot(object):
         elif doThis == BrightBot.commands[1]: #Lenny
             return self.lenny()
         elif doThis == BrightBot.commands[2]: #Outcome
-            try:
+            #try:
                 x, y, event = data.split(" ", 2)
                 return self.outcome(x, y, event)
-            except UnboundLocalError:
-                return "Incorrect format! Usage: !outcome (number of dice), (number of sides on the dice), (Event String)"
+            #except UnboundLocalError:
+                #return "Incorrect format! Usage: !outcome (number of sides), (number of dice), (Event String)"
         elif doThis == BrightBot.commands[3]: #Poll
             try:
                 if data[0].lower() == "h":
@@ -111,6 +111,8 @@ class BrightBot(object):
                 remWho, remWhat = data.split(" ", 1)
                 return  self.remember(remWho, remWhat)
             except UnboundLocalError:
+                return "Incorrect Format! Usage: !rem (name) (what)"
+            except AttributeError:
                 return "Incorrect Format! Usage: !rem (name) (what)"
         elif doThis == BrightBot.commands[13]: #Forget
             try:
@@ -176,9 +178,8 @@ class BrightBot(object):
         print("Attempting to load 8ball quotes from " + self.eightBallSaveFile)
         try:
             with open(self.eightBallSaveFile, "r") as myFile:
-                for i in myFile.readline():
+                for i in myFile:
                     self.eightBallResponses.append(i);
-                self.eightBallResponses = myFile.read()
         except FileNotFoundError:
                 print("Could not find 8ball quotes file! Making one instead...")
                 f = open(self.eightBallSaveFile, "w")
@@ -249,23 +250,17 @@ class BrightBot(object):
     def lenny(self):
         return "!Lenny is still in development! Try again later."
         #todaysDate = date.today() #Figure out why this line is breaking.
-    def outcome(self, dice, sides, eventString):
-        pseudorandom = 0
+    def outcome(self, sides, dice, eventString):
+        diceCounter = 0
         total = 0
         sideNo = int(sides)
         diceNo = int(dice)
         maximumNumber = sideNo * diceNo
-        while pseudorandom < diceNo:
-            total = total + random.randint(1, sideNo)
-            pseudorandom = pseudorandom + 1
-        if eventString == "-r":
-            return total
-        elif eventString == "-p":
-            print(total)
-            return True
+        while diceCounter < diceNo:
+            total = total + int(random.randint(1, sideNo))
+            diceCounter = diceCounter + 1
         else:
-            print(eventString + ":" + str(total) +  " out of " + str(maximumNumber) + ".")
-            return eventString + ":" + str(total) +  " out of " + str(maximumNumber) + "."
+            return eventString + ": " + str(total) +  " out of " + str(maximumNumber) + "."
     def answer(self, pollID, pollAns):
         print(self.polls)
         pollNames = list(self.polls.keys())
@@ -359,6 +354,7 @@ class BrightBot(object):
         pickle.dump(self.whois, f)
         f.close()
         print("Saved Successfuly.")
+
     def forget(self, who):
         try:
             del self.whois[who]
@@ -372,13 +368,14 @@ class BrightBot(object):
                 return "I don't know who " + who + " is!"
     def remember(self, who, what):
         self.whois[who] = what
-        return "I'll remember that"
         self.saveWhois()
+        return "I'll remember that"
+
+        
     def whoIs(self, who):
         try:
             return who + self.whois[who]
         except KeyError:
-            print(who)
             try:
                 dummyKey, dummySplit = who.split(" ", 1)
                 return dummyKey + self.whois[dummyKey]
@@ -387,8 +384,8 @@ class BrightBot(object):
             except ValueError:
                 return "I don't know either. (Make sure they are submitted via !rem first!)"
     def eightBall(self, question):
-        result = random.randint(1, len(eightBallResponses))
-        return eightBallResponses[result]
+        result = random.randint(1, len(self.eightBallResponses))
+        return self.eightBallResponses[result]
     def __init__(self): 
         print("BrightBot V:0.1")
         print("Created by Matthew Weidenhamer")
@@ -398,7 +395,7 @@ Maelyn = BrightBot()
 def testFunctionality(): #Solely for testing sake. You can probably ignore this.
     pass
 t = Twitter(
-    auth=auth)
+    auth=auth, retry = True)
 print("Finished starting bot.")
 twitter_userstream = TwitterStream(auth=auth, domain='userstream.twitter.com')
 for msg in twitter_userstream.user():
