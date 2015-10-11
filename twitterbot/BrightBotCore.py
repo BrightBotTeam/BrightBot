@@ -21,7 +21,7 @@ class BrightBot(object):
     
     quotes =  {}
     polls = {}
-    whois = {"Brightbot" : " is our lord and savior, the Brightest star of the heavens and the earth. Those who worship him shall find peace, and those who reject him, destruction."}
+    whois = {"Brightbot" : "is our lord and savior, the Brightest star of the heavens and the earth. Those who worship him shall find peace, and those who reject him, destruction."}
     rules = ""
     fakerules = ""
     whoisSaveFile = "whois.p"
@@ -32,8 +32,8 @@ class BrightBot(object):
     roomName = "Twitter Of The Gods"
     eightBallResponses = []
     currExp = {}
-    iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 1.0 'It's Alive!!!' "
-    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!rem", "!forget", "!reset", "!help", "!omagicconch"]
+    iAm = "I am Brightbot, master of the chatroom, a bot framework originally created by Matthew Weidenhamer.\nCurrent version is 1.2 'It's Congealed' "
+    commands = ["!bestof", "!lenny", "!outcome", "!poll", "!answer", "!stoppoll", "!mood", "!whoami", "!currentpolls", "!rules", "!fakerules", "!whois", "!rem", "!forget", "!reset", "!help", "!omagicconch", "!quote", "!forgetq"]
     def emptyDictionary(self, dictionary, key):
         dictionary.pop(key, None)
     def toDo(self, command, sender):
@@ -45,53 +45,46 @@ class BrightBot(object):
             data = False
             doThis = doThis.lower()
         if doThis == BrightBot.commands[0]: #Best Of
-            action, stuff = data.split(" ", 1)
-            action = action.lower()
-            if action == "get":
-                response = int(response)
-                return self.getQuote(person, stuff, sender)
-            elif action == "add":
-                return self.addQuote(person, stuff)
-            elif action == "delete":
-                return self.delQuote(person, stuff)
-            else:
-                return "Unrecognized action! Usage: !bestof (get/add/delete) (person) (command). Do note if you are adding a quote, you need to add apostrophies ('') around the actual quote!"
+            try:
+                return self.getQuote(data)
+            except ValueError:
+                return "Unrecognized action! Usage: bestof (person) #Quotenumber. "
         elif doThis == BrightBot.commands[1]: #Lenny
             return self.lenny()
         elif doThis == BrightBot.commands[2]: #Outcome
-            #try:
+            try:
                 x, y, event = data.split(" ", 2)
                 return self.outcome(x, y, event)
-            #except UnboundLocalError:
-                #return "Incorrect format! Usage: !outcome (number of sides), (number of dice), (Event String)"
+            except UnboundLocalError or TypeError:
+                return "Incorrect format! Usage: !outcome (number of sides), (number of dice), (Event String)"
         elif doThis == BrightBot.commands[3]: #Poll
             try:
                 if data[0].lower() == "h":
                     try:
                         question, answers = data.split("? ", 1)
                         return self.hardPoll(question, answers, sender)
-                    except ValueError:
+                    except ValueError or TypeError or ValueError:
                         return "Could not create poll! make sure you have at least one question mark at the end of your question!"
                 elif data[0].lower == "s":
                     placeHolder, actual = data.split("? ", 1)
                     return self.softPoll(actual, sender)
-            except UnboundLocalError | TypeError:
-                'Incorrect format! Usage: !poll (hard/soft), (Question)?[If hard then add: , (answer 1). (answer 2). (etc)]'
+            except UnboundLocalError or TypeError or ValueError:
+                'Incorrect format! Usage: !poll (h/s), (Question)? [If h then add: , (answer 1). (answer 2). (etc)]'
         elif doThis == BrightBot.commands[4]: #Answer
             try:
                 pollID, pollAns = data.split(" ", 1)
                 return self.answer(pollID, pollAns)
-            except UnboundLocalError:
+            except UnboundLocalError or ValueError or TypeError:
                 return "Incorrect format! Usage: !answer (pollID) (answer/answer identifier)"
         elif doThis == BrightBot.commands[5]: #Stop Poll
             try:
                 return self.stopPolling(data, sender)
-            except UnboundLocalError:
+            except UnboundLocalError or ValueError:
                 return "Incorrect format! Usage: !stoppoll (pollID)"
         elif doThis == BrightBot.commands[6]: #Moods
             try:
                 return self.mood(data)
-            except UnboundLocalError:
+            except UnboundLocalError or ValueError:
                 return "Incorrect Format! Usage: !mood (mood)"
         elif doThis == BrightBot.commands[7]: #WhoAmI
             return self.iAm
@@ -104,32 +97,81 @@ class BrightBot(object):
         elif doThis == BrightBot.commands[11]: #Whois
             try:
                 return self.whoIs(data)
-            except UnboundLocalError:
+            except UnboundLocalError or ValueError or TypeError:
                 return "Incorrect format! Usage: !whois (name)"
         elif doThis == BrightBot.commands[12]: #Remember
             try:
                 remWho, remWhat = data.split(" ", 1)
                 return  self.remember(remWho, remWhat)
-            except UnboundLocalError:
-                return "Incorrect Format! Usage: !rem (name) (what)"
-            except AttributeError:
+            except UnboundLocalError or TypeError or ValueError or AttributeError:
                 return "Incorrect Format! Usage: !rem (name) (what)"
         elif doThis == BrightBot.commands[13]: #Forget
             try:
                 return self.forget(data)
-            except UnboundLocalError:
-                return "Incorrect format! Usage: !forget (who)"
+            except UnboundLocalError or ValueError or TypeError:
+                return "Incorrect format! Usage: !forget (who). See "
         elif doThis == BrightBot.commands[14]: #Reset
             return self.mood(roomName)
         elif doThis == BrightBot.commands[15]: #Help
-            return "Available commands: " + str(self.commands)
+            if data:
+                if data.lower() == BrightBot.commands[0]:
+                    return "Bestof is the command for getting quotes from people. Usage: !bestof [who] #Quotenumber. The # is required."
+                elif data.lower() == BrightBot.commands[1]:
+                    return "[UNDER CONSTRUCTION] !lenny is a command for getting a lenny face. Typing !lenny returns a lenny. Nuff said."
+                elif data.lower() == BrightBot.commands[2]:
+                    return "Outcome is a basic dicerolling application. Usage: !outcome (number of sides), (number of dice), (an additional string it will add on to the end)"
+                elif data.lower() == BrightBot.commands[3]:
+                    return "Poll is a polling command that can be used to ask a group a question and get anonymous responses. Use h to have a list of preset answers, or s to take anything as an answer. Usage: 'Incorrect format! Usage: !poll (h/s), (Question)?[If hard then add: , (answer 1). (answer 2). (etc)]'"
+                elif data.lower() == BrightBot.commands[4]:
+                    return "Answer is used to register your answer to a poll. Make sure to include a written answer for a soft poll (s), or the answer ID for a hard poll (h). Usage: !answer (pollID) (answer/answer identifier)"
+                elif data.lower() == BrightBot.commands[5]:
+                    return "StopPoll is used to stop polling. The poll is deleted from BrightBot's memory, and the results are given to you. PLEASE NOTE: You can only stop a poll if you started it. Usage: !stoppoll [pollid]"
+                elif data.lower() == BrightBot.commands[6]:
+                    return "[NOT AVAILABLE WITH CURRENT TWITTER DISTRIBUTION] !mood changes the name of the twitter conversation to the requested name."
+                elif data.lower() == BrightBot.commands[7]:
+                    return "!whoami lets me brag about myself a little bit."
+                elif data.lower() == BrightBot.commands[8]:
+                    return "CurrentPolls tells you about all the polls currently open."
+                elif data.lower() == BrightBot.commands[9]:
+                    return "Rules tells you about a provided list of rules."
+                elif data.lower() == BrightBot.commands[10]:
+                    return "FakeRules tells you about a preprovided list of fake rules."
+                elif data.lower() == BrightBot.commands[11]:
+                    return "Whois tells you what it knows about a person. To modify these, try !rem or !forget. Usage: !whois (name)"
+                elif data.lower() == BrightBot.commands[12]:
+                    return "Remember defines what BrightBot will remember about a person. Unlike quotes, if there is already an entry for !rem, it will be overwritten. Usage: !rem person *What to remember. The * is required."
+                elif data.lower() == BrightBot.commands[13]:
+                    return "Forget forgets about a person. Do note this affects !whois, and not quotes. Usage: !forget (person)"
+                elif data.lower() == BrightBot.commands[14]:
+                    return "[UNDER CONSTRUCTION] !reset returns the mood to what it originally was."
+                elif data.lower() == BrightBot.commands[15]:
+                    return "!help helps. Whodathunkit."
+                elif data.lower() == BrightBot.commands[16]:
+                    return "OMagicConch is a magic 8 ball, and returns as such. Usage: !omagicconch (question)"
+                elif data.lower() == BrightBot.commands[17]:
+                    return "Quote adds a quote for a person to the dictionary of quotes. Usage: !quote (person} *Quote. The star is required."
+                elif data.lower() == BrightBot.commands[18]:
+                    return "ForgetQuote forgets a certain quote from a person. Usage: !forgetq (who) #QuoteNumber"
+            else:
+                return "Available commands: " + str(self.commands)
+                
         elif doThis == BrightBot.commands[16]: #OMagicConch
             try:
                 return self.eightBall(data)
             except UnboundLocalError:
                 return "Incorrect Format! Usage: !OMightConch (question)"
+        elif doThis == BrightBot.commands[17]: #Quote
+            try:
+                self.addQuote(data)
+            except ValueError or TypeError or UnboundLocalError:
+                return "Incorrect format! Usage: !quote (who) #(quote number)"
+        elif doThis == BrightBot.commands[18]: #ForgetQuote
+            try:
+                self.delQuote(data)
+            except ValueError or TypeError or UnboundLocalError:
+                return "Incorrect format! Usage: !forgetq (who) #(quote number)"
         else:
-            return "Unknown command. Type !help for a list of commands."
+            return "Unknown command. Type !help for a list of commands, or !help (command) for a detailed look at a command."
     def loadFiles(self):
         print("Attempting to load quotes from " + self.quotesSaveFile)
         try:
@@ -194,53 +236,32 @@ class BrightBot(object):
         pickle.dump(self.quotes, f)
         f.close()
         print("Saved Successfuly.")
-    def getQuote(self, data, sentRequest):
-        person, number = data.split(" ", 1)
+    def getQuote(self, data):
+        person, number = data.split("#", 1)
         try:
-            print(sentRequest + " has requested quote number " + str(number) + " of " + person + ".")
-            currentQuote = self.quotes[person][number - 1]
+            print("Requested quote number " + str(number) + " of " + person + ".")
+            currentQuote = self.quotes[person][int(number) - 1]
             print(currentQuote)
-            return "Quote " + str(number) + " of " + len(self.quotes[person]) + ": " + currentQuote
+            return "Quote " + str(number) + " of " + str(len(self.quotes[person])) + ": " + currentQuote
         except KeyError:
             return "I don't know who " + person + " is!"
         except IndexError:
-            return "Could not find quote number " + number + " for " + person + "!"
-        except ValueError:
-            person, person2, number = data.split(" ", 2)
-            try:
-                print(sentRequest + " has requested quote number " + str(number) + " of " + person + " " + person2 + ".")
-                currentQuote = self.quotes[person + " " + person2][number - 1]
-                return "Quote " + str(number) + " of " + len(self.quotes[person + " " + person2]) + ": " + currentQuote
-            except KeyError:
-                    return "I don't know who " + person + " " + person2 + " is!"
-            except IndexError:
-                    return "Could not find quote number " + number + " for " + person + "!"
-            except ValueError:
-                person, person2, person3, number = data.split(" ", 3)
-                try:
-                    str(number)
-                    print(sentRequest + " has requested quote number " + str(number) + " of " + person + ".")
-                    currentQuote = self.quotes[person + " " + person2 + " " + person3][number - 1]
-                    return "Quote " + str(number) + " of " + len(self.quotes[person + " " + person2 + " " + person3]) + ": " + currentQuote
-                except KeyError:
-                    return "I don't know who " + person + " " + person2 + " " + person3 + " is!"
-                except IndexError:
-                    return "Could not find quote number " + number + " for " + person + " " + person2 + " " + person3 + "!"
-                except ValueError:
-                    return "That name is too long!"
+            return "Could not find quote number " + str(number) + " for " + person + "!"
     def addQuote(self, data):
-        person, quote, part2 = data.split("'", 2)
+        person, quote = data.split("*", 1)
         try:
             self.quotes[person].append(quote)
             self.saveQuotes()
             return "Quote saved successfully."
         except KeyError:
+            print("Creating new quote dictionary for " + person)
             self.quotes[person] = [quote]
             self.saveQuotes()
             return "Quote saved successfully."
-    def delQuote(self, person, quote):
+    def delQuote(self, data):
+        person, quote = data.split("#", 1)
         try:
-            del self.quotes[person][quote]
+            del self.quotes[person][int(quote)]
             self.saveQuotes()
             return "Quote forgotten."
         except KeyError:
@@ -374,11 +395,11 @@ class BrightBot(object):
         
     def whoIs(self, who):
         try:
-            return who + self.whois[who]
+            return who + " " + self.whois[who]
         except KeyError:
             try:
                 dummyKey, dummySplit = who.split(" ", 1)
-                return dummyKey + self.whois[dummyKey]
+                return dummyKey + " " + self.whois[dummyKey]
             except KeyError:
                 return "I don't know either. (Make sure they are submitted via !rem first!)"
             except ValueError:
@@ -387,19 +408,19 @@ class BrightBot(object):
         result = random.randint(1, len(self.eightBallResponses))
         return self.eightBallResponses[result]
     def __init__(self): 
-        print("BrightBot V:0.1")
+        print("BrightBot V:1.2")
         print("Created by Matthew Weidenhamer")
         print("Last updated 10/5/2015")
         self.loadFiles()
 Maelyn = BrightBot()
-def testFunctionality(): #Solely for testing sake. You can probably ignore this.
-    pass
 t = Twitter(
     auth=auth, retry = True)
 print("Finished starting bot.")
+testFunctionality()
 twitter_userstream = TwitterStream(auth=auth, domain='userstream.twitter.com')
-for msg in twitter_userstream.user():
-    if 'direct_message' in msg:
-        if(msg['direct_message']['sender']['screen_name'] != "BrightOfTheSCP"):
-            print("Message recieved from " + msg['direct_message']['sender']['screen_name'])
-            t.direct_messages.new(screen_name = msg['direct_message']['sender']['screen_name'], user_id = msg['direct_message']['sender']['id'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name']))
+while(True):
+    for msg in twitter_userstream.user():
+        if 'direct_message' in msg:
+            if(msg['direct_message']['sender']['screen_name'] != "BrightOfTheSCP" and msg['direct_message']["text"][0] == "!"):
+                print("Message recieved from " + msg['direct_message']['sender']['screen_name'] + ": " + msg['direct_message']["text"])
+                t.direct_messages.new(screen_name = msg['direct_message']['sender']['screen_name'], user_id = msg['direct_message']['sender']['id'], text = Maelyn.toDo(msg['direct_message']["text"], msg['direct_message']['sender']['name']))
